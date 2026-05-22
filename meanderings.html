@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Essays and longer-form writing on philosophy, humanities, and reflections.">
+  <title>Meanderings — Sanjana Gupta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link nav__link--active">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+        </ul>
+
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-header page-header--meanderings">
+      <div class="container">
+        <h1 class="page-header__title">Meanderings</h1>
+        <p class="page-header__subtitle">
+          Thoughts and observations. These are the things that occupy my mind beyond astronomy.
+        </p>
+      </div>
+    </section>
+
+    <!-- Writings Grid -->
+    <section class="section--compact section--has-grid">
+      <div class="container">
+        <div class="writings-filter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="essay">Essays</button>
+          <button class="filter-btn" data-filter="book">Books</button>
+          <button class="filter-btn" data-filter="film">Film</button>
+        </div>
+        <div class="writings-grid">
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">August 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/emotions-inanimate-objects.html">Emotions Elicited by Inanimate Objects: Exploring Children's Attachment to Toys</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Kohut's self-psychology, Winnicott's transitional objects, and the strange depth of what children feel for things that cannot feel back.
+            </p>
+            <a href="essays/emotions-inanimate-objects.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">May 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/blurring-lines.html">The Blurring Lines between Democratisation and Hindu-isation</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              How British colonialism and Hindu landlordism eroded Bhumij tribal self-governance, and why this matters for environmental democracy now.
+            </p>
+            <a href="essays/blurring-lines.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">September 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/western-modernity-colonial-writings.html">Exploring the Imposition of Western Modernity Through Colonial and Postcolonial Writings</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Aspiration, violence, and trauma in Wicomb, Naipaul, Mishra, Kincaid, and African poets. How the colonial imposition of modernity ultimately produces aspiration in the colonised.
+            </p>
+            <a href="essays/western-modernity-colonial-writings.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">December 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/vernacular-english-postcolonial.html">Vernacular English: Exploring the Banal in Postcolonial Writings</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              How Bajaj, Kohli, Banerji, and Dangarembga make English a world language by depicting the local, the provincial, and the everyday.
+            </p>
+            <a href="essays/vernacular-english-postcolonial.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">December 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/subarnarekha-borders-intersectional.html">Reinterpreting Borders in an Intersectional Framework in Ritwik Ghatak's <em>Subarnarekha</em></a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Territorial, spatial, and social borders in Ghatak's partition film. Caste, patriarchy, and the lives of East Bengali refugees who did not get to choose which side of the line they were on.
+            </p>
+            <a href="essays/subarnarekha-borders-intersectional.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">September 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/aurelius-meditations.html">What Were the <em>Meditations</em> Really For?</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Pierre Hadot's reading of Marcus Aurelius: the <em>Meditations</em> as spiritual exercise rather than philosophical treatise, and what that distinction actually changes.
+            </p>
+            <a href="essays/aurelius-meditations.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--film" data-type="film">
+            <p class="writing-card__type">Film</p>
+            <p class="writing-card__date">October 2021</p>
+            <h2 class="writing-card__title">
+              <a href="https://boxd.it/erXhw7" target="_blank" rel="noopener">Ghare Baire Aaj</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Aparna Sen's reworking of Tagore: a Dalit wife, a liberal editor, and a Hindutva demagogue walk into a story Tagore wrote in 1916 and India has been living ever since.
+            </p>
+            <a href="https://boxd.it/erXhw7" class="writing-card__link" target="_blank" rel="noopener">Read on Letterboxd →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">October 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/indian-humour.html">Indian Humour Throughout the Ages</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              From the <em>Natya Shastra</em>'s classification of <em>hāsyam</em> to Kazi Nazrul Islam writing satirical songs from a British jail. A survey of how humour has moved through Indian history.
+            </p>
+            <a href="essays/indian-humour.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">October 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/communist-manifesto-problems.html">What the <em>Communist Manifesto</em> Got Wrong</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The Maoist misreading, the missing political theory, and why Marx's vagueness about revolution is not a dialectical virtue.
+            </p>
+            <a href="essays/communist-manifesto-problems.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">December 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/mughal-influences.html">Mughal Influences in Eastern India and Western Europe</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The Mughal dynasty's cultural reach: Rembrandt absorbing the <em>mukula</em> gesture into his Amsterdam workshop, and the musical and architectural flowering of the Malla kingdom in Bishnupur.
+            </p>
+            <a href="essays/mughal-influences.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">December 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/bridging-human-nonhuman.html">Bridging the Gap Between the Human and the Non-Human</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The Capitalocene, non-human rights, and why knowing the facts about climate change is never enough.
+            </p>
+            <a href="essays/bridging-human-nonhuman.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">December 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/woolf-room-of-ones-own.html">The Room Is Not Just a Room</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Woolf's <em>A Room of One's Own</em> as a metaphor for mental liberation: its enduring argument, its limits, and its resonance beyond its original terms.
+            </p>
+            <a href="essays/woolf-room-of-ones-own.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">October 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/tourism-capitalism-sikkim.html">Tourism, Capitalism, and the Vulnerability of the Sikkim Mountains</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              A landslide in Sikkim, the people stranded by it, and what capitalism's relationship with tourism does to mountains.
+            </p>
+            <a href="essays/tourism-capitalism-sikkim.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">July 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/defining-an-emotion.html">What Are the Major Conceptual Difficulties in Defining an Emotion?</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The criterion problem, homeostasis, and why defining an emotion may be fundamentally impossible.
+            </p>
+            <a href="essays/defining-an-emotion.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">November 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/slaves-king-oedipus.html">The Slave Who Knew Everything Oedipus Didn't</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The Shepherd's role in <em>King Oedipus</em>: how Sophocles places the truth that destroys a king in the hands of the person with the least power.
+            </p>
+            <a href="essays/slaves-king-oedipus.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">October 2021</p>
+            <h2 class="writing-card__title">
+              <a href="essays/wicomb-cape-town.html">Zoë Wicomb's <em>You Can't Get Lost in Cape Town</em></a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Apartheid childhood, the Bildungsroman form, Eurocentrism, and Simmel's tragedy of culture in Wicomb's Cape Town.
+            </p>
+            <a href="essays/wicomb-cape-town.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">February 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/ecosystems-human-impact-capitalocene.html">Ecosystems, Human Impact, and the Age of Capital</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Rachel Carson, the Anthropocene, and why the Capitalocene is the more honest framing for the crisis we're in.
+            </p>
+            <a href="essays/ecosystems-human-impact-capitalocene.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">March 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/gmo-food-security-environment.html">Genetically Modified Crops: Food Security, Farmer Distress, and the Limits of Biotechnology</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              BT cotton, the Green Revolution's legacy, and why GMOs are not the most viable solution in Indian agriculture.
+            </p>
+            <a href="essays/gmo-food-security-environment.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">September 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/blind-darkness-isa-upanishad.html">Blind Darkness and the Razor's Edge</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The Isa Upanishad's counterintuitive claim: those who delight in learning enter a blinder darkness than the ignorant. Zeno, Socrates, and the hazard of partial knowledge.
+            </p>
+            <a href="essays/blind-darkness-isa-upanishad.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--book" data-type="book">
+            <p class="writing-card__type">Book</p>
+            <p class="writing-card__date">November 2023</p>
+            <h2 class="writing-card__title">
+              <a href="essays/tiresias-blindness.html">Tiresias: The Blindness That Sees</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              The inversion at the heart of <em>King Oedipus</em>: the physically sightless prophet who sees everything, and the clear-eyed king who is blind to himself.
+            </p>
+            <a href="essays/tiresias-blindness.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">February 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/unfulfilled-promises-globalisation.html">The Unfulfilled Promises of Globalisation</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              What globalisation promised the developing world and what it delivered instead. A reading of Stiglitz's <em>Globalization and its Discontents</em>.
+            </p>
+            <a href="essays/unfulfilled-promises-globalisation.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">April 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/climate-action-and-justice.html">Climate Action and Climate Justice</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Climate injustice, the colonial roots of the emissions divide, and the frameworks of climate action from the Paris Agreement to the Green New Deal.
+            </p>
+            <a href="essays/climate-action-and-justice.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">July 2022</p>
+            <h2 class="writing-card__title">
+              <a href="essays/real-fun-in-a-dream.html">Could You Be Having a Lot of Real Fun in a Dream?</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Dream yoga, Advaita Vedanta, quantum mechanics, and whether the reality of dreams can sustain real experience.
+            </p>
+            <a href="essays/real-fun-in-a-dream.html" class="writing-card__link">Read →</a>
+          </article>
+
+          <article class="writing-card writing-card--essay" data-type="essay">
+            <p class="writing-card__type">Essay</p>
+            <p class="writing-card__date">January 2024</p>
+            <h2 class="writing-card__title">
+              <a href="essays/kollontai-womens-question.html">Alexandra Kollontai and the Women's Question</a>
+            </h2>
+            <p class="writing-card__excerpt">
+              Kollontai's socialist feminism: why she linked sexual liberation to the class struggle, and why she refused to choose between the personal and the political.
+            </p>
+            <a href="essays/kollontai-womens-question.html" class="writing-card__link">Read →</a>
+          </article>
+
+        
+                </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

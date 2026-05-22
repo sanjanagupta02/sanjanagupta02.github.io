@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Travel photography and visual moments from around the world.">
+  <title>Glimpses — Sanjana Gupta</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+  
+  <style>
+    /* Gallery-specific placeholder styles */
+    .gallery__item img[src^="data:"] {
+      background: linear-gradient(135deg, var(--color-light) 0%, var(--color-border) 100%);
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link nav__link--active">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+        </ul>
+        
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Glimpses</h1>
+        <p class="page-header__subtitle">
+          Moments from travels and everyday life.
+        </p>
+      </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section class="gallery">
+      <div class="container">
+        <div class="gallery__grid">
+
+          <figure class="gallery__item">
+            <img src="images/photo_002.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_003.jpeg" alt="US Capitol, Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">US Capitol, Washington, DC</p>
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_004.jpeg" alt="Rivanna River, Virginia, from the Pembroke Pettit Bridge" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Rivanna River, Virginia, from the Pembroke Pettit Bridge</p>
+              <p class="gallery__caption-location">Feb 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_005.jpeg" alt="Walnut Creek Park" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Walnut Creek Park</p>
+              <p class="gallery__caption-location">Feb 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_006.jpeg" alt="World's largest Aquamarine, Smithsonian's National Museum of Natural History" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text"><a href="https://www.smithsonianmag.com/blogs/national-museum-of-natural-history/2021/03/16/how-worlds-largest-aquamarine-gem-came-be/" target="_blank" rel="noopener">World's largest Aquamarine, Smithsonian's National Museum of Natural History</a></p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_007.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_008.jpeg" alt="Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Washington, DC</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_009.jpeg" alt="Washington Monument, Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Washington Monument, Washington, DC</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_010.jpeg" alt="New Cabell Hall, UVa" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New Cabell Hall, UVa</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_011.jpeg" alt="Somewhere in Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Virginia</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_012.jpeg" alt="From Humpback Rocks, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">From Humpback Rocks, Virginia</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_013.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_014.jpeg" alt="Path from UVa Astronomy Department to NRAO, arrival of spring" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Path from UVa Astronomy Department to NRAO, arrival of spring</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_015.jpeg" alt="White Avalokiteshvara, Malla Dynasty, 1350, Freer Gallery of Art, Smithsonian's National Museum of Asian Art" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text"><a href="https://globalnepalimuseum.com/objects/bodhisattva-white-avalokiteshvara-amoghapasha-lokeshvara/" target="_blank" rel="noopener">White Avalokiteshvara, Malla Dynasty, 1350, Freer Gallery of Art, Smithsonian's National Museum of Asian Art</a></p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_016.jpeg" alt="Cherry blossom in Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Cherry blossom in Washington, DC</p>
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_017.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_018.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_019.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_020.jpeg" alt="McCormick Observatory, Charlottesville, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">McCormick Observatory, Charlottesville, Virginia</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_021.jpeg" alt="Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Washington, DC</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_022.jpeg" alt="Chinatown, Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Chinatown, Washington, DC</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_023.jpeg" alt="Smithsonian American Art Museum, Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Smithsonian American Art Museum, Washington, DC</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_024.jpeg" alt="Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Washington, DC</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_025.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_026.jpeg" alt="The Range, UVa" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">The Range, UVa</p>
+              <p class="gallery__caption-location">Apr 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_027.jpeg" alt="New Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New Delhi</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_028.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_029.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_030.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_031.jpeg" alt="Delhi Gate" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Delhi Gate</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_032.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_033.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_034.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_035.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_036.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_037.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_038.jpeg" alt="Asia's oldest operating distillery, Mohan Meakin, Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Asia's oldest operating distillery, Mohan Meakin, Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_039.jpeg" alt="Apparently haunted? Kasauli" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Apparently haunted? Kasauli</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_040.jpeg" alt="Kasauli, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kasauli, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_041.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_042.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_043.jpeg" alt="Dagshai Central Jail and Museum, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Dagshai Central Jail and Museum, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_044.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_045.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_046.jpeg" alt="Jatoli Shiv Mandir, Solan, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Jatoli Shiv Mandir, Solan, Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_047.jpeg" alt="Somewhere in Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Himachal Pradesh</p>
+              <p class="gallery__caption-location">May 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_048.jpeg" alt="Tata Institute of Fundamental Research, Mumbai" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Tata Institute of Fundamental Research, Mumbai</p>
+              <p class="gallery__caption-location">Jan 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_049.jpeg" alt="Tata Institute of Fundamental Research, Mumbai" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Tata Institute of Fundamental Research, Mumbai</p>
+              <p class="gallery__caption-location">Jan 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_050.jpeg" alt="Lodhi Garden, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Lodhi Garden, Delhi</p>
+              <p class="gallery__caption-location">Jan 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_051.jpeg" alt="Lodhi Garden, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Lodhi Garden, Delhi</p>
+              <p class="gallery__caption-location">Jan 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_052.jpeg" alt="Lodhi Garden, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Lodhi Garden, Delhi</p>
+              <p class="gallery__caption-location">Jan 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_053.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_054.jpeg" alt="Tosh, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Tosh, Himachal Pradesh</p>
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_055.jpeg" alt="Tosh, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Tosh, Himachal Pradesh</p>
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_056.jpeg" alt="Tosh, Himachal Pradesh" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Tosh, Himachal Pradesh</p>
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_057.jpeg" alt="Humayun's Tomb, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Humayun's Tomb, Delhi</p>
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_058.jpeg" alt="Humayun's Tomb, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Humayun's Tomb, Delhi</p>
+              <p class="gallery__caption-location">Mar 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_059.jpeg" alt="Agra" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Agra</p>
+              <p class="gallery__caption-location">Apr 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_060.jpeg" alt="Agra" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Agra</p>
+              <p class="gallery__caption-location">Apr 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_061.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_062.jpeg" alt="Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Delhi</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_063.jpeg" alt="Qutub Minar, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Qutub Minar, Delhi</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_064.jpeg" alt="Qutub Minar, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Qutub Minar, Delhi</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_065.jpeg" alt="Qutub Minar, Delhi" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Qutub Minar, Delhi</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_066.jpeg" alt="Charminar, Hyderabad" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Charminar, Hyderabad</p>
+              <p class="gallery__caption-location">May 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_067.jpeg" alt="Bishnupur, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Bishnupur, West Bengal</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_068.jpeg" alt="Bishnupur, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Bishnupur, West Bengal</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_069.jpeg" alt="Bishnupur, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Bishnupur, West Bengal</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_070.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_071.jpeg" alt="Purulia, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Purulia, West Bengal</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_072.jpeg" alt="Purulia, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Purulia, West Bengal</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_073.jpeg" alt="Victoria Memorial, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Victoria Memorial, Kolkata</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_074.jpeg" alt="Kumartuli, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kumartuli, Kolkata</p>
+              <p class="gallery__caption-location">Jul 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_075.jpeg" alt="Charlottesville, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Charlottesville, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_076.jpeg" alt="Monticello, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Monticello, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_077.jpeg" alt="Jefferson Library, Monticello, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Jefferson Library, Monticello, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_078.jpeg" alt="Jefferson Library, Monticello, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Jefferson Library, Monticello, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_079.jpeg" alt="Blue Ridge Parkway, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Blue Ridge Parkway, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_080.jpeg" alt="Blue Ridge Parkway, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Blue Ridge Parkway, Virginia</p>
+              <p class="gallery__caption-location">Aug 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_081.jpeg" alt="Doghouse, McCormick Observatory, Charlottesville" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Doghouse, McCormick Observatory, Charlottesville</p>
+              <p class="gallery__caption-location">Sep 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_082.jpeg" alt="Doghouse, McCormick Observatory, Charlottesville" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Doghouse, McCormick Observatory, Charlottesville</p>
+              <p class="gallery__caption-location">Sep 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_083.jpeg" alt="Albemarle Ciderworks" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Albemarle Ciderworks</p>
+              <p class="gallery__caption-location">Sep 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_084.jpeg" alt="Ali Sethi Concert, Washington, DC" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ali Sethi Concert, Washington, DC</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_085.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_086.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_087.jpeg" alt="Saguaro cactus, Tucson" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Saguaro cactus, Tucson</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_088.jpeg" alt="Somewhere in Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_089.jpeg" alt="Kitt Peak Observatory, Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kitt Peak Observatory, Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_090.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_091.jpeg" alt="Somewhere in Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_092.jpeg" alt="Large Binocular Telescope, Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Large Binocular Telescope, Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_093.jpeg" alt="Large Binocular Telescope, Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Large Binocular Telescope, Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_094.jpeg" alt="Large Binocular Telescope, Arizona" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Large Binocular Telescope, Arizona</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_095.jpeg" alt="Very Large Array, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Very Large Array, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_096.jpeg" alt="Very Large Array, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Very Large Array, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_097.jpeg" alt="Very Large Array, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Very Large Array, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_098.jpeg" alt="White Sands, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">White Sands, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_099.jpeg" alt="Apache Point Observatory, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Apache Point Observatory, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_100.jpeg" alt="Apache Point Observatory, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Apache Point Observatory, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_101.jpeg" alt="Apache Point Observatory, New Mexico" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Apache Point Observatory, New Mexico</p>
+              <p class="gallery__caption-location">Oct 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_102.jpeg" alt="Dallas, Texas" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Dallas, Texas</p>
+              <p class="gallery__caption-location">Nov 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_103.jpeg" alt="Aurora, Charlottesville" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Aurora, Charlottesville</p>
+              <p class="gallery__caption-location">Nov 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_104.jpeg" alt="Woodstock, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Woodstock, Virginia</p>
+              <p class="gallery__caption-location">Nov 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_105.jpeg" alt="Luray Caverns, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Luray Caverns, Virginia</p>
+              <p class="gallery__caption-location">Nov 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_106.jpeg" alt="Luray Caverns, Virginia" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Luray Caverns, Virginia</p>
+              <p class="gallery__caption-location">Nov 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_107.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_108.jpeg" alt="Penn Station, New York" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Penn Station, New York</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_109.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_110.jpeg" alt="Statue of Liberty, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Statue of Liberty, New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_111.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_112.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_113.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_114.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_115.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_116.jpeg" alt="New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_117.jpeg" alt="Amethyst Geode, The American Museum of Natural History, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Amethyst Geode, The American Museum of Natural History, New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_118.jpeg" alt="Work by Rashid Johnson, Solomon R. Guggenheim Museum, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Work by Rashid Johnson, Solomon R. Guggenheim Museum, New York City</p>
+              <p class="gallery__caption-location">Dec 2025</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_119.jpeg" alt="Les Demoiselles d'Avignon by Pablo Picasso, Museum of Modern Art, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Les Demoiselles d'Avignon by Pablo Picasso, Museum of Modern Art, New York City</p>
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_120.jpeg" alt="Starry Night by Vincent van Gogh, Museum of Modern Art, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Starry Night by Vincent van Gogh, Museum of Modern Art, New York City</p>
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_121.jpeg" alt="Museum of Modern Art, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Museum of Modern Art, New York City</p>
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_122.jpeg" alt="Museum of Modern Art, New York City" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Museum of Modern Art, New York City</p>
+              <p class="gallery__caption-location">Jan 2026</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_124.jpeg" alt="Somewhere in Uttarakhand" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Uttarakhand</p>
+              <p class="gallery__caption-location">Nov 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_125.jpeg" alt="Durga Puja in Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Durga Puja in Kolkata</p>
+              <p class="gallery__caption-location">Oct 2024</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_126.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_127.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">Sep 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_128.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_129.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_130.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_131.jpeg" alt="Somewhere in Diamond Harbour" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Diamond Harbour</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_132.jpeg" alt="Indian Music Experience, Bangalore" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Indian Music Experience, Bangalore</p>
+              <p class="gallery__caption-location">Jun 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_133.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_134.jpeg" alt="Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kolkata</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_135.jpeg" alt="Homi Bhabha Centre for Science Education and Research, Mumbai" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Homi Bhabha Centre for Science Education and Research, Mumbai</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_136.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_137.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_138.jpeg" alt="Somewhere in Uttarakhand" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Uttarakhand</p>
+              <p class="gallery__caption-location">Nov 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_139.jpeg" alt="Sundarbans, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Sundarbans, West Bengal</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_140.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_141.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_142.jpeg" alt="Asawarpur, Haryana" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Asawarpur, Haryana</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_143.jpeg" alt="Sealdah Station, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Sealdah Station, Kolkata</p>
+              <p class="gallery__caption-location">Dec 2021</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_144.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_145.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_146.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_147.jpeg" alt="Somewhere in Uttarakhand" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Uttarakhand</p>
+              <p class="gallery__caption-location">Nov 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_148.jpeg" alt="St. Paul's Cathedral, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">St. Paul's Cathedral, Kolkata</p>
+              <p class="gallery__caption-location">May 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_149.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_150.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">May 2021</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_151.jpeg" alt="Somewhere in Uttarakhand" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Uttarakhand</p>
+              <p class="gallery__caption-location">Nov 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_152.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_153.jpeg" alt="National Centre for Biological Sciences, Bengaluru" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">National Centre for Biological Sciences, Bengaluru</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_154.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_155.jpeg" alt="Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Kolkata</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_156.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_157.jpeg" alt="The BSS School, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">The BSS School, Kolkata</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_158.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_159.jpeg" alt="Ashoka University" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Ashoka University</p>
+              <p class="gallery__caption-location">Jul 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_160.jpeg" alt="Asawarpur, Haryana" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Asawarpur, Haryana</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_161.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_162.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_163.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_164.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_165.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_166.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_167.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_168.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_169.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_170.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_171.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_172.jpeg" alt="Shiv Nadar University, Noida" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Shiv Nadar University, Noida</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_173.jpeg" alt="Presidency University, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Presidency University, Kolkata</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_174.jpeg" alt="" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-location">Dec 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_175.jpeg" alt="Durga Puja in Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Durga Puja in Kolkata</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_176.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_177.jpeg" alt="Somewhere in Uttarakhand" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Somewhere in Uttarakhand</p>
+              <p class="gallery__caption-location">Nov 2022</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_178.jpeg" alt="Andaman and Nicobar Islands" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Andaman and Nicobar Islands</p>
+              <p class="gallery__caption-location">Jan 2023</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_179.jpeg" alt="National Centre for Biological Sciences, Bengaluru" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">National Centre for Biological Sciences, Bengaluru</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_180.jpeg" alt="Park Street on Christmas Day, Kolkata" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Park Street on Christmas Day, Kolkata</p>
+              <p class="gallery__caption-location">Dec 2024</p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_181.jpeg" alt="Sundarbans, West Bengal" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Sundarbans, West Bengal</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery__item">
+            <img src="images/photo_182.jpeg" alt="Asawarpur, Haryana" loading="lazy">
+            <figcaption class="gallery__caption">
+              <p class="gallery__caption-text">Asawarpur, Haryana</p>
+              <p class="gallery__caption-location"></p>
+            </figcaption>
+          </figure>
+
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox (injected by JS, but structure shown for reference) -->
+  <div class="lightbox" aria-hidden="true">
+    <button class="lightbox__close" aria-label="Close lightbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="lightbox__content">
+      <img class="lightbox__img" src="" alt="">
+      <div class="lightbox__caption"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Research publications and observing proposals in astronomy.">
+  <title>Research — Sanjana Gupta</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link nav__link--active">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+        </ul>
+        
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Research</h1>
+        <p class="page-header__subtitle">
+          My PhD work focuses on multiwavelength observations of stripped envelope supernovae
+          and their connection to gamma-ray bursts.
+        </p>
+      </div>
+    </section>
+
+    <!-- Current Research -->
+    <section class="research-section">
+      <div class="container">
+
+        <div class="paper-list">
+          <article class="paper-item">
+
+            <div class="research-body">
+
+              <p>
+                Stripped envelope supernovae (SE-SNe), specifically Type Ib, Ic, and Ic-BL, are the
+                deaths of massive stars that have shed their outer hydrogen and sometimes helium envelopes
+                prior to explosion. Among these, Type Ic-BL events (broad-lined Ic) are distinguished by
+                their exceptionally high ejecta velocities. A subset of Ic-BL SNe are related to
+                long-duration gamma-ray bursts, making them among the most energetic and extreme phenomena
+                in the universe. Understanding what drives this association, and why only some Ic-BL SNe
+                produce GRBs, is one of the open questions in high-energy astrophysics.
+              </p>
+              <p>
+                I work on radio and X-ray observations of stripped envelope supernovae, with my current
+                focus on Ic-BL SNe: exploring the diversity among them and understanding how they relate
+                to other stripped envelope supernovae. Radio and X-ray radiation give us information
+                beyond what optical provides, serving as probes of density and circumstellar medium
+                structure, and offering evidence for the presence of jets or a central engine. They also
+                encode the mass-loss history of the progenitor system, which is key to understanding what
+                kind of star exploded.
+              </p>
+
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Observing Proposals -->
+    <section class="research-section">
+      <div class="container">
+        <h2 class="research-section__title">Observing Time</h2>
+
+        <div class="table-responsive">
+          <table class="proposals-table">
+            <thead>
+              <tr>
+                <th>Program</th>
+                <th>Role</th>
+                <th>Telescope</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Program">Probing Late-Time Physics of Radio Bright Type Ic-BL Supernovae with the uGMRT</td>
+                <td data-label="Role" class="role-pi">PI</td>
+                <td data-label="Telescope">uGMRT</td>
+                <td data-label="Time">12 hrs</td>
+              </tr>
+              <tr>
+                <td data-label="Program">GMRT Followup of 5 Stripped-Envelope Supernovae to Complete a Volume-Limited Survey for Circumstellar Interaction</td>
+                <td data-label="Role" class="role-coi">Co-I</td>
+                <td data-label="Telescope">uGMRT</td>
+                <td data-label="Time">20 hrs</td>
+              </tr>
+              <tr>
+                <td data-label="Program">GLIMPSE: GMRT Low-Frequency Investigation of Massive Progenitors of Supernova Explosions</td>
+                <td data-label="Role" class="role-coi">Co-I</td>
+                <td data-label="Telescope">uGMRT</td>
+                <td data-label="Time">44 hrs · multiple cycles</td>
+              </tr>
+              <tr>
+                <td data-label="Program">Project GLIMPSE: uGMRT Follow-Up of Five Radio Bright Young Core Collapse Supernovae</td>
+                <td data-label="Role" class="role-coi">Co-I</td>
+                <td data-label="Telescope">uGMRT</td>
+                <td data-label="Time">55 hrs · multiple cycles</td>
+              </tr>
+              <tr>
+                <td data-label="Program">Swift TOO</td>
+                <td data-label="Role" class="role-pi">PI</td>
+                <td data-label="Telescope">Swift</td>
+                <td data-label="Time">25 ks · multiple objects</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <!-- Code -->
+    <section class="research-section">
+      <div class="container">
+        <h2 class="research-section__title">Code</h2>
+
+        <ul class="code-list">
+          <li class="code-item">
+            <span class="code-item__name">xray_uplim</span>
+            <span class="code-item__desc">Computes X-ray upper limits on count rate and optionally flux and luminosity using the Bayesian framework of Kraft et al. (1991) for major X-ray telescopes. <a href="https://github.com/sanjanagupta02/xray_uplim" class="code-item__link" target="_blank" rel="noopener">GitHub ↗</a></span>
+          </li>
+          <li class="code-item">
+            <span class="code-item__name">radio_lightcurves</span>
+            <span class="code-item__desc">Pipeline for making radio light curves from major radio surveys; VLASS component implemented, broader development ongoing.</span>
+          </li>
+          <li class="code-item">
+            <span class="code-item__name">sn-digest</span>
+            <span class="code-item__desc">Pulls the latest arXiv submissions related to supernovae and explains them in plain English using AI. <a href="https://github.com/sanjanagupta02/sn-digest" class="code-item__link" target="_blank" rel="noopener">GitHub ↗</a></span>
+          </li>
+          <li class="code-item">
+            <span class="code-item__name">arnett-sn-lightcurves</span>
+            <span class="code-item__desc">Fits Arnett's model to stripped envelope supernova bolometric light curves to estimate ejecta mass and nickel yield.</span>
+          </li>
+        </ul>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
