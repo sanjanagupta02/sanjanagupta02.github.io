@@ -33,6 +33,8 @@ function initWritingsFilter() {
   if (!buttons.length) return;
   const cards = document.querySelectorAll('.writing-card');
 
+  const stampMap = document.getElementById('stamp-map-section');
+
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.classList.remove('active'));
@@ -42,6 +44,7 @@ function initWritingsFilter() {
         const match = filter === 'all' || card.classList.contains('writing-card--' + filter);
         card.classList.toggle('hidden', !match);
       });
+      if (stampMap) stampMap.classList.toggle('hidden', filter !== 'all');
     });
   });
 }

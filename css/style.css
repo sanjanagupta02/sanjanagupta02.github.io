@@ -971,15 +971,15 @@ main::after {
 }
 
 .writing-card--plays {
-  background: color-mix(in srgb, #a87060 6%, var(--color-bg));
-  border: 1px solid color-mix(in srgb, #a87060 25%, transparent);
-  border-left: 3px solid #a87060;
+  background: color-mix(in srgb, #a87060 6%, var(--color-bg)) !important;
+  border: 1px solid color-mix(in srgb, #a87060 25%, transparent) !important;
+  border-left: 3px solid #a87060 !important;
 }
 
 [data-theme="dark"] .writing-card--plays {
-  background: color-mix(in srgb, #a87060 10%, var(--color-bg));
-  border-color: color-mix(in srgb, #a87060 30%, transparent);
-  border-left-color: #c89080;
+  background: color-mix(in srgb, #a87060 10%, var(--color-bg)) !important;
+  border-color: color-mix(in srgb, #a87060 30%, transparent) !important;
+  border-left-color: #c89080 !important;
 }
 
 .writing-card--plays .writing-card__type { color: #a87060; }
