@@ -1914,7 +1914,8 @@ main::after {
 .filter-btn[data-filter="book"].active  { background: #6b8f71; border-color: #6b8f71; }
 .filter-btn[data-filter="film"].active  { background: #6b82a8; border-color: #6b82a8; }
 
-.writing-card.hidden {
+.writing-card.hidden,
+.hidden {
   display: none;
 }
 
