@@ -970,6 +970,25 @@ main::after {
   border-left-color: var(--color-accent);
 }
 
+.writing-card--plays {
+  background: color-mix(in srgb, #a87060 6%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, #a87060 25%, transparent);
+  border-left: 3px solid #a87060;
+}
+
+[data-theme="dark"] .writing-card--plays {
+  background: color-mix(in srgb, #a87060 10%, var(--color-bg));
+  border-color: color-mix(in srgb, #a87060 30%, transparent);
+  border-left-color: #c89080;
+}
+
+.writing-card--plays .writing-card__type { color: #a87060; }
+[data-theme="dark"] .writing-card--plays .writing-card__type { color: #c89080; }
+.writing-card--plays .writing-card__title a:hover { color: #a87060; }
+[data-theme="dark"] .writing-card--plays .writing-card__title a:hover { color: #c89080; }
+.writing-card--plays .writing-card__link { color: #a87060; }
+[data-theme="dark"] .writing-card--plays .writing-card__link { color: #c89080; }
+
 /* Scatter effect: subtle alternating rotations and vertical stagger */
 .writing-card:nth-child(odd)  { transform: rotate(-0.4deg); }
 .writing-card:nth-child(even) { transform: rotate(0.5deg);  margin-top: var(--space-2xl); }

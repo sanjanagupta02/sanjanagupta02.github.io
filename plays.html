@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A log of plays Sanjana Gupta has watched.">
+  <title>Plays — Sanjana Gupta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link nav__link--active">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+        </ul>
+
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Plays</h1>
+        <p class="page-header__subtitle">
+          Theatre I have watched.
+        </p>
+      </div>
+    </section>
+
+    <section class="section--compact">
+      <div class="container">
+        <div class="table-responsive">
+          <table class="proposals-table">
+            <thead>
+              <tr>
+                <th>Play</th>
+                <th>Date</th>
+                <th>Venue</th>
+                <th>Language</th>
+                <th>About</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Play"><em>Raktakarabi</em></td>
+                <td data-label="Date">13 May 2023</td>
+                <td data-label="Venue">Girish Mancha, Kolkata</td>
+                <td data-label="Language">Bangla</td>
+                <td data-label="About">By Tagore; a modern, post-COVID adaptation. Directed by Kaushik Chattopadhyay.</td>
+              </tr>
+              <tr>
+                <td data-label="Play"><em>Apurboshoti</em></td>
+                <td data-label="Date">14 May 2023</td>
+                <td data-label="Venue">Academy of Fine Arts, Kolkata</td>
+                <td data-label="Language">Bangla</td>
+                <td data-label="About">By Sukumari Dutta; the first play in Bangla written by a woman, and somewhat autobiographical.</td>
+              </tr>
+              <tr>
+                <td data-label="Play"><em>Haraner Natjamai</em></td>
+                <td data-label="Date">May 2023</td>
+                <td data-label="Venue">Academy of Fine Arts, Kolkata</td>
+                <td data-label="Language">Bangla</td>
+                <td data-label="About">Set during the Tebhaga movement. Bhuban Mondal leads an effort to unite farmers against the local zamindar and police. Das, who sacrifices his life in the struggle, is Haran's son; his family continues to support Mondal. Mondal evades capture by disguising himself as Haran's natjamai (grandson-in-law), an idea credited to Moyna's mother. The real natjamai, Jagamohan, is also central: he defies his moneylender father and brings his wife Moyna home despite an unpaid dowry. Elements of jatra throughout; police brutality and the corruption of moneylenders shown unflinchingly.</td>
+              </tr>
+              <tr>
+                <td data-label="Play"><em>Binodini Opera</em></td>
+                <td data-label="Date">May 2023</td>
+                <td data-label="Venue">Madhusudan Mancha, Kolkata</td>
+                <td data-label="Language">Bangla</td>
+                <td data-label="About">A musical on the life of Noti Binodini. The ending draws on Brechtian Epic Theatre. Directed by Padmanabha Dasgupta; Sudipta Chakraborty played Binodini.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
