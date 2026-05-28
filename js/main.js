@@ -44,7 +44,7 @@ function initWritingsFilter() {
         const match = filter === 'all' || card.classList.contains('writing-card--' + filter);
         card.classList.toggle('hidden', !match);
       });
-      if (stampMap) stampMap.classList.toggle('hidden', filter !== 'all');
+      if (stampMap) stampMap.style.display = filter === 'all' ? '' : 'none';
     });
   });
 }

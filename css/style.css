@@ -1913,6 +1913,7 @@ main::after {
 
 .filter-btn[data-filter="book"].active  { background: #6b8f71; border-color: #6b8f71; }
 .filter-btn[data-filter="film"].active  { background: #6b82a8; border-color: #6b82a8; }
+.filter-btn[data-filter="plays"].active { background: #a87060; border-color: #a87060; }
 
 .writing-card.hidden,
 .hidden {
