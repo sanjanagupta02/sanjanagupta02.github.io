@@ -108,10 +108,15 @@ if os.path.exists(json_path) and not use_full:
 else:
     combined = sne
 
-# Replace NaN with None for clean JSON
-combined = combined.where(pd.notna(combined), None)
-
 records = combined.to_dict(orient='records')
+
+# Replace float NaN with None so json.dump writes null not NaN (NaN is invalid JSON)
+import math
+for rec in records:
+    for k in rec:
+        if isinstance(rec[k], float) and math.isnan(rec[k]):
+            rec[k] = None
+
 with open(json_path, 'w') as f:
     json.dump(records, f, separators=(',', ':'))
 
