@@ -262,11 +262,18 @@
           aladin.on('objectClicked', obj => {
             if (!obj || !obj.data) { rPopup.style.display = 'none'; return; }
             const d = obj.data;
-            let html = `<div style="position:absolute;top:6px;right:10px;cursor:pointer;color:var(--color-text-soft);font-size:1.1rem;line-height:1" onclick="document.getElementById('research-sn-popup').style.display='none'">×</div>`;
-            html += `<div style="font-weight:600;color:var(--color-text);padding-right:16px;margin-bottom:6px">${d.name || 'Unknown'}</div>`;
-            if (d.type)       html += `<div style="color:var(--color-text-soft)">Type <span style="color:var(--color-text);margin-left:6px">${d.type}</span></div>`;
-            if (d.discovered) html += `<div style="color:var(--color-text-soft)">Discovered <span style="color:var(--color-text);margin-left:6px">${d.discovered}</span></div>`;
-            if (d.z != null)  html += `<div style="color:var(--color-text-soft)"><em>z</em> <span style="color:var(--color-text);margin-left:6px">${d.z}</span></div>`;
+            const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const tc = dark ? '#e8e8e8' : '#1a1a1a';
+            const sc = dark ? '#909090' : '#666666';
+            const bg = dark ? '#1e1e22' : '#ffffff';
+            const bd = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+            rPopup.style.background = bg;
+            rPopup.style.border = `1px solid ${bd}`;
+            let html = `<div style="position:absolute;top:6px;right:10px;cursor:pointer;color:${sc};font-size:1.1rem;line-height:1" onclick="document.getElementById('research-sn-popup').style.display='none'">×</div>`;
+            html += `<div style="font-weight:600;color:${tc};padding-right:16px;margin-bottom:6px">${d.name || 'Unknown'}</div>`;
+            if (d.type)       html += `<div style="color:${sc}">Type <span style="color:${tc};margin-left:6px">${d.type}</span></div>`;
+            if (d.discovered) html += `<div style="color:${sc}">Discovered <span style="color:${tc};margin-left:6px">${d.discovered}</span></div>`;
+            if (d.z != null)  html += `<div style="color:${sc}"><em>z</em> <span style="color:${tc};margin-left:6px">${d.z}</span></div>`;
             if (d.bareName)   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
             rPopup.innerHTML = html;
             rPopup.style.display = 'block';
