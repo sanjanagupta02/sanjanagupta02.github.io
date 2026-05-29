@@ -154,19 +154,19 @@
     <section class="skymap-section">
       <div class="container">
         <div class="skymap-meta">
-          <div class="sn-legend">
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#c9a87c"></span>Ia</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e8974a"></span>Ia-CSM</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e8d060"></span>Iax</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#6b82a8"></span>II</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#4ab5c4"></span>IIn</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#7ab5a0"></span>IIb</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#6b8f71"></span>Ib</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#4a7a5a"></span>Ibn</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#9b7ab8"></span>Ic</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#c47aaa"></span>Icn</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e05252"></span>Ic-BL</span>
-            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#888"></span>Other</span>
+          <div class="sn-legend" id="sn-legend">
+            <span class="sn-legend__item" data-bucket="Ia"     title="Ia, Ia-91T-like, Ia-91bg-like, Ia-pec, Ia-SC" style="cursor:pointer"><span class="sn-legend__dot" style="background:#c9a87c"></span>Ia</span>
+            <span class="sn-legend__item" data-bucket="Ia-CSM" title="Ia-CSM" style="cursor:pointer"><span class="sn-legend__dot" style="background:#e8974a"></span>Ia-CSM</span>
+            <span class="sn-legend__item" data-bucket="Iax"    title="Iax[02cx-like]" style="cursor:pointer"><span class="sn-legend__dot" style="background:#e8d060"></span>Iax</span>
+            <span class="sn-legend__item" data-bucket="II"     title="II, IIP, IIL, II-pec" style="cursor:pointer"><span class="sn-legend__dot" style="background:#6b82a8"></span>II</span>
+            <span class="sn-legend__item" data-bucket="IIn"    title="IIn, IIn-pec" style="cursor:pointer"><span class="sn-legend__dot" style="background:#4ab5c4"></span>IIn</span>
+            <span class="sn-legend__item" data-bucket="IIb"    title="IIb" style="cursor:pointer"><span class="sn-legend__dot" style="background:#7ab5a0"></span>IIb</span>
+            <span class="sn-legend__item" data-bucket="Ib"     title="Ib, Ib-pec, Ib-Ca-rich" style="cursor:pointer"><span class="sn-legend__dot" style="background:#6b8f71"></span>Ib</span>
+            <span class="sn-legend__item" data-bucket="Ibn"    title="Ibn, Ibn/Icn" style="cursor:pointer"><span class="sn-legend__dot" style="background:#4a7a5a"></span>Ibn</span>
+            <span class="sn-legend__item" data-bucket="Ic"     title="Ic, Ic-pec, Ic-Ca-rich" style="cursor:pointer"><span class="sn-legend__dot" style="background:#9b7ab8"></span>Ic</span>
+            <span class="sn-legend__item" data-bucket="Icn"    title="Icn" style="cursor:pointer"><span class="sn-legend__dot" style="background:#c47aaa"></span>Icn</span>
+            <span class="sn-legend__item" data-bucket="Ic-BL"  title="Ic-BL" style="cursor:pointer"><span class="sn-legend__dot" style="background:#e05252"></span>Ic-BL</span>
+            <span class="sn-legend__item" data-bucket="other"  title="Unclassified and rare types" style="cursor:pointer"><span class="sn-legend__dot" style="background:#888"></span>Other</span>
           </div>
           <span class="sn-count"><span id="sn-count">—</span> supernovae</span>
         </div>
@@ -245,12 +245,39 @@
         survey: 'P/Mellinger/color',
       });
 
+      /* Custom popup */
+      const snPopup = document.createElement('div');
+      snPopup.id = 'sn-custom-popup';
+      snPopup.style.cssText = 'display:none;position:fixed;z-index:10000;background:var(--color-bg,#fff);border:1px solid rgba(128,128,128,0.25);border-radius:8px;padding:12px 16px;max-width:260px;box-shadow:0 4px 20px rgba(0,0,0,0.15);font-family:var(--font-mono);font-size:0.78rem;line-height:1.6;';
+      document.body.appendChild(snPopup);
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+      aladin.on('objectClicked', obj => {
+        if (!obj || !obj.data) { snPopup.style.display = 'none'; return; }
+        const d = obj.data;
+        let html = `<div style="position:absolute;top:6px;right:10px;cursor:pointer;color:var(--color-text-soft);font-size:1.1rem;line-height:1" onclick="document.getElementById('sn-custom-popup').style.display='none'">×</div>`;
+        html += `<div style="font-weight:600;color:var(--color-text);padding-right:16px;margin-bottom:6px">${d.name || 'Unknown'}</div>`;
+        if (d.type)      html += `<div style="color:var(--color-text-soft)">Type <span style="color:var(--color-text);margin-left:6px">${d.type}</span></div>`;
+        if (d.discovered) html += `<div style="color:var(--color-text-soft)">Discovered <span style="color:var(--color-text);margin-left:6px">${d.discovered}</span></div>`;
+        if (d.z != null)  html += `<div style="color:var(--color-text-soft)"><em>z</em> <span style="color:var(--color-text);margin-left:6px">${d.z}</span></div>`;
+        if (d.bareName)   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
+        snPopup.innerHTML = html;
+        snPopup.style.display = 'block';
+        const pw = snPopup.offsetWidth || 260;
+        let left = mouseX + 14, top = mouseY - 10;
+        if (left + pw > window.innerWidth - 8) left = mouseX - pw - 14;
+        if (top + 130 > window.innerHeight) top = window.innerHeight - 140;
+        snPopup.style.left = left + 'px';
+        snPopup.style.top  = top + 'px';
+      });
+
       /* One catalog per type bucket */
       const catalogs = {};
       TYPE_BUCKETS.forEach(b => {
         catalogs[b.key] = A.catalog({
           name: `SN ${b.key}`,
-          onClick: 'showPopup',
           shape: 'circle',
           color: b.color,
           sourceSize: 6,
@@ -263,6 +290,28 @@
         const size = fov > 60 ? 4 : fov > 10 ? 7 : 10;
         TYPE_BUCKETS.forEach(b => {
           if (catalogs[b.key]) catalogs[b.key].sourceSize = size;
+        });
+      });
+
+      /* Legend filter */
+      let activeBucket = null;
+      document.querySelectorAll('#sn-legend [data-bucket]').forEach(item => {
+        item.addEventListener('click', () => {
+          const bucket = item.dataset.bucket;
+          if (activeBucket === bucket) {
+            activeBucket = null;
+            TYPE_BUCKETS.forEach(b => { try { catalogs[b.key].show(); } catch(e) {} });
+            document.querySelectorAll('#sn-legend [data-bucket]').forEach(i => { i.style.opacity = '1'; i.style.fontWeight = ''; });
+          } else {
+            activeBucket = bucket;
+            TYPE_BUCKETS.forEach(b => {
+              try { b.key === bucket ? catalogs[b.key].show() : catalogs[b.key].hide(); } catch(e) {}
+            });
+            document.querySelectorAll('#sn-legend [data-bucket]').forEach(i => {
+              i.style.opacity = i.dataset.bucket === bucket ? '1' : '0.25';
+              i.style.fontWeight = i.dataset.bucket === bucket ? '600' : '';
+            });
+          }
         });
       });
 
@@ -281,15 +330,15 @@
             if (isNaN(ra) || isNaN(dec)) return;
 
             const bucket = getBucket(sn.type);
-
             const bareName = (sn.name || '').replace(/^(SN|AT)\s*/i, '').trim();
-            const sourceData = { name: sn.name || 'Unknown' };
-            if (sn.type)           sourceData['Type']      = sn.type;
-            if (sn.discovery_date) sourceData['Discovered'] = sn.discovery_date.slice(0, 10);
-            if (sn.redshift != null) sourceData['z']        = sn.redshift;
-            if (bareName)          sourceData['TNS']        = `wis-tns.org/object/${bareName}`;
 
-            byBucket[bucket].push(A.source(ra, dec, sourceData));
+            byBucket[bucket].push(A.source(ra, dec, {
+              name:      sn.name || 'Unknown',
+              type:      sn.type || null,
+              discovered: sn.discovery_date ? sn.discovery_date.slice(0, 10) : null,
+              z:         sn.redshift != null ? sn.redshift : null,
+              bareName:  bareName || null,
+            }));
           });
 
           TYPE_BUCKETS.forEach(b => {
