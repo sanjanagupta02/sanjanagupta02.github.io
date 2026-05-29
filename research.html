@@ -265,14 +265,12 @@
                 if (isNaN(ra) || isNaN(dec)) return;
                 const bucket = rGetBucket(sn.type);
                 const bareName = (sn.name || '').replace(/^(SN|AT)\s*/i, '').trim();
-                const tnsLink = bareName ? `<a href="https://www.wis-tns.org/object/${bareName}" target="_blank" rel="noopener" style="color:#c9a87c">View on TNS →</a>` : '';
-                const descParts = [
-                  sn.type ? `<span style="font-size:0.85em">Type: <strong>${sn.type}</strong></span>` : '',
-                  sn.discovery_date ? `<span style="font-size:0.85em">Discovered: ${sn.discovery_date}</span>` : '',
-                  sn.redshift != null ? `<span style="font-size:0.85em"><em>z</em> = ${sn.redshift}</span>` : '',
-                  tnsLink,
-                ].filter(Boolean);
-                byBucket[bucket].push(A.source(ra, dec, { popupTitle: sn.name || 'Unknown', popupDesc: descParts.join('<br>') }));
+                const sourceData = { name: sn.name || 'Unknown' };
+                if (sn.type)             sourceData['Type']       = sn.type;
+                if (sn.discovery_date)   sourceData['Discovered'] = sn.discovery_date.slice(0, 10);
+                if (sn.redshift != null) sourceData['z']          = sn.redshift;
+                if (bareName)            sourceData['TNS']        = `wis-tns.org/object/${bareName}`;
+                byBucket[bucket].push(A.source(ra, dec, sourceData));
               });
               R_TYPE_BUCKETS.forEach(b => { if (byBucket[b.key].length > 0) rCatalogs[b.key].addSources(byBucket[b.key]); });
               document.getElementById('research-sn-count').textContent = data.length.toLocaleString();

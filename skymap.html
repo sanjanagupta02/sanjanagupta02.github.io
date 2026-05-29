@@ -282,25 +282,14 @@
 
             const bucket = getBucket(sn.type);
 
-            /* Build TNS link — strip prefix to get the bare name */
             const bareName = (sn.name || '').replace(/^(SN|AT)\s*/i, '').trim();
-            const tnsLink  = bareName
-              ? `<a href="https://www.wis-tns.org/object/${bareName}" target="_blank" rel="noopener" style="color:#c9a87c">View on TNS →</a>`
-              : '';
+            const sourceData = { name: sn.name || 'Unknown' };
+            if (sn.type)           sourceData['Type']      = sn.type;
+            if (sn.discovery_date) sourceData['Discovered'] = sn.discovery_date.slice(0, 10);
+            if (sn.redshift != null) sourceData['z']        = sn.redshift;
+            if (bareName)          sourceData['TNS']        = `wis-tns.org/object/${bareName}`;
 
-            const descParts = [
-              sn.type          ? `<span style="font-size:0.85em">Type: <strong>${sn.type}</strong></span>` : '',
-              sn.discovery_date ? `<span style="font-size:0.85em">Discovered: ${sn.discovery_date}</span>` : '',
-              sn.redshift != null ? `<span style="font-size:0.85em"><em>z</em> = ${sn.redshift}</span>` : '',
-              tnsLink,
-            ].filter(Boolean);
-
-            byBucket[bucket].push(
-              A.source(ra, dec, {
-                popupTitle: sn.name || 'Unknown',
-                popupDesc: descParts.join('<br>'),
-              })
-            );
+            byBucket[bucket].push(A.source(ra, dec, sourceData));
           });
 
           TYPE_BUCKETS.forEach(b => {
