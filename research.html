@@ -183,9 +183,15 @@
 
         <div style="display:flex; flex-wrap:wrap; gap: var(--space-md); align-items:center; margin-bottom: var(--space-md);">
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#c9a87c;flex-shrink:0"></span>Ia</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#e8974a;flex-shrink:0"></span>Ia-CSM</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#e8d060;flex-shrink:0"></span>Iax</span>
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#6b82a8;flex-shrink:0"></span>II</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#4ab5c4;flex-shrink:0"></span>IIn</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#7ab5a0;flex-shrink:0"></span>IIb</span>
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#6b8f71;flex-shrink:0"></span>Ib</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#4a7a5a;flex-shrink:0"></span>Ibn</span>
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#9b7ab8;flex-shrink:0"></span>Ic</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#c47aaa;flex-shrink:0"></span>Icn</span>
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#e05252;flex-shrink:0"></span>Ic-BL</span>
           <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#888;flex-shrink:0"></span>Other</span>
           <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--color-text-soft);letter-spacing:0.06em;margin-left:auto"><span id="research-sn-count">—</span> supernovae</span>
@@ -201,18 +207,33 @@
       <script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
       <script>
         const R_TYPE_BUCKETS = [
-          { key: 'Ic-BL', color: '#e05252' },
-          { key: 'Ic',    color: '#9b7ab8' },
-          { key: 'Ib',    color: '#6b8f71' },
-          { key: 'Ia',    color: '#c9a87c' },
-          { key: 'II',    color: '#6b82a8' },
-          { key: 'other', color: '#888888' },
+          { key: 'Ic-BL',  color: '#e05252' },
+          { key: 'Icn',    color: '#c47aaa' },
+          { key: 'Ic',     color: '#9b7ab8' },
+          { key: 'IIb',    color: '#7ab5a0' },
+          { key: 'Ibn',    color: '#4a7a5a' },
+          { key: 'Ib',     color: '#6b8f71' },
+          { key: 'IIn',    color: '#4ab5c4' },
+          { key: 'II',     color: '#6b82a8' },
+          { key: 'Iax',    color: '#e8d060' },
+          { key: 'Ia-CSM', color: '#e8974a' },
+          { key: 'Ia',     color: '#c9a87c' },
+          { key: 'other',  color: '#888888' },
         ];
         function rGetBucket(type) {
           if (!type) return 'other';
-          for (const b of R_TYPE_BUCKETS) {
-            if (b.key !== 'other' && type.includes(b.key)) return b.key;
-          }
+          const t = type.replace(/^SN\s+/i, '').trim();
+          if (t === 'Ic-BL' || t.startsWith('Ic-BL')) return 'Ic-BL';
+          if (t.startsWith('Icn'))    return 'Icn';
+          if (t.startsWith('Ic'))     return 'Ic';
+          if (t === 'IIb' || t.startsWith('IIb-')) return 'IIb';
+          if (t.startsWith('Ibn'))    return 'Ibn';
+          if (t.startsWith('Ib') && !t.startsWith('Ib/')) return 'Ib';
+          if (t.startsWith('IIn'))    return 'IIn';
+          if (t.startsWith('II'))     return 'II';
+          if (t.startsWith('Iax'))    return 'Iax';
+          if (t.startsWith('Ia-CSM')) return 'Ia-CSM';
+          if (t.startsWith('Ia'))     return 'Ia';
           return 'other';
         }
         A.init.then(() => {

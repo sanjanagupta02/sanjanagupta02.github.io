@@ -156,24 +156,18 @@
       <div class="container">
         <div class="skymap-meta">
           <div class="sn-legend">
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#c9a87c"></span>Ia
-            </span>
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#6b82a8"></span>II
-            </span>
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#6b8f71"></span>Ib
-            </span>
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#9b7ab8"></span>Ic
-            </span>
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#e05252"></span>Ic-BL
-            </span>
-            <span class="sn-legend__item">
-              <span class="sn-legend__dot" style="background:#888"></span>Other
-            </span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#c9a87c"></span>Ia</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e8974a"></span>Ia-CSM</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e8d060"></span>Iax</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#6b82a8"></span>II</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#4ab5c4"></span>IIn</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#7ab5a0"></span>IIb</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#6b8f71"></span>Ib</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#4a7a5a"></span>Ibn</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#9b7ab8"></span>Ic</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#c47aaa"></span>Icn</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#e05252"></span>Ic-BL</span>
+            <span class="sn-legend__item"><span class="sn-legend__dot" style="background:#888"></span>Other</span>
           </div>
           <span class="sn-count"><span id="sn-count">—</span> supernovae</span>
         </div>
@@ -206,19 +200,34 @@
   <script>
     /* SN type -> color bucket */
     const TYPE_BUCKETS = [
-      { key: 'Ic-BL', color: '#e05252' },   // must come before Ic
-      { key: 'Ic',    color: '#9b7ab8' },
-      { key: 'Ib',    color: '#6b8f71' },
-      { key: 'Ia',    color: '#c9a87c' },
-      { key: 'II',    color: '#6b82a8' },
-      { key: 'other', color: '#888888' },
+      { key: 'Ic-BL',  color: '#e05252' },
+      { key: 'Icn',    color: '#c47aaa' },
+      { key: 'Ic',     color: '#9b7ab8' },
+      { key: 'IIb',    color: '#7ab5a0' },
+      { key: 'Ibn',    color: '#4a7a5a' },
+      { key: 'Ib',     color: '#6b8f71' },
+      { key: 'IIn',    color: '#4ab5c4' },
+      { key: 'II',     color: '#6b82a8' },
+      { key: 'Iax',    color: '#e8d060' },
+      { key: 'Ia-CSM', color: '#e8974a' },
+      { key: 'Ia',     color: '#c9a87c' },
+      { key: 'other',  color: '#888888' },
     ];
 
     function getBucket(type) {
       if (!type) return 'other';
-      for (const b of TYPE_BUCKETS) {
-        if (b.key !== 'other' && type.includes(b.key)) return b.key;
-      }
+      const t = type.replace(/^SN\s+/i, '').trim();
+      if (t === 'Ic-BL' || t.startsWith('Ic-BL')) return 'Ic-BL';
+      if (t.startsWith('Icn'))    return 'Icn';
+      if (t.startsWith('Ic'))     return 'Ic';
+      if (t === 'IIb' || t.startsWith('IIb-')) return 'IIb';
+      if (t.startsWith('Ibn'))    return 'Ibn';
+      if (t.startsWith('Ib') && !t.startsWith('Ib/')) return 'Ib';
+      if (t.startsWith('IIn'))    return 'IIn';
+      if (t.startsWith('II'))     return 'II';
+      if (t.startsWith('Iax'))    return 'Iax';
+      if (t.startsWith('Ia-CSM')) return 'Ia-CSM';
+      if (t.startsWith('Ia'))     return 'Ia';
       return 'other';
     }
 
