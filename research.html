@@ -203,7 +203,6 @@
         <div id="research-skymap-loading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-soft);pointer-events:none;">Loading...</div>
       </div>
 
-      <link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css" />
       <script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
       <script>
         const R_TYPE_BUCKETS = [
@@ -278,7 +277,7 @@
               R_TYPE_BUCKETS.forEach(b => { if (byBucket[b.key].length > 0) rCatalogs[b.key].addSources(byBucket[b.key]); });
               document.getElementById('research-sn-count').textContent = data.length.toLocaleString();
             })
-            .catch(() => { document.getElementById('research-skymap-loading').textContent = 'Could not load supernova data.'; });
+            .catch((err) => { console.error('SNe load error:', err); document.getElementById('research-skymap-loading').textContent = 'Could not load supernova data.'; });
         });
       </script>
     </section>

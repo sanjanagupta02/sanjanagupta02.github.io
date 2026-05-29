@@ -11,7 +11,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
 
   <style>
@@ -312,7 +311,8 @@
 
           document.getElementById('sn-count').textContent = data.length.toLocaleString();
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error('SNe load error:', err);
           document.getElementById('skymap-loading').textContent = 'Could not load supernova data.';
         });
     });
