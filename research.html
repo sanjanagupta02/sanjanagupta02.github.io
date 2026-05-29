@@ -173,6 +173,95 @@
         </div>
       </div>
     </section>
+    <!-- Sky Map -->
+    <section class="research-section">
+      <div class="container">
+        <h2 class="research-section__title">Supernova Sky Map</h2>
+        <p style="color: var(--color-text-soft); font-size: 0.95rem; margin-bottom: var(--space-md);">
+          All classified supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: none;">Transient Name Server</a>, plotted by sky position. Updated daily. <a href="skymap.html" style="color: var(--color-accent); text-decoration: none;">Open full map →</a>
+        </p>
+
+        <div style="display:flex; flex-wrap:wrap; gap: var(--space-md); align-items:center; margin-bottom: var(--space-md);">
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#c9a87c;flex-shrink:0"></span>Ia</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#6b82a8;flex-shrink:0"></span>II</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#6b8f71;flex-shrink:0"></span>Ib</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#9b7ab8;flex-shrink:0"></span>Ic</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#e05252;flex-shrink:0"></span>Ic-BL</span>
+          <span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;color:var(--color-text-soft)"><span style="width:10px;height:10px;border-radius:50%;background:#888;flex-shrink:0"></span>Other</span>
+          <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--color-text-soft);letter-spacing:0.06em;margin-left:auto"><span id="research-sn-count">—</span> supernovae</span>
+        </div>
+      </div>
+
+      <div style="position:relative">
+        <div id="research-aladin-div" style="width:100%;height:55vh;min-height:360px;"></div>
+        <div id="research-skymap-loading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-soft);pointer-events:none;">Loading...</div>
+      </div>
+
+      <link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css" />
+      <script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+      <script>
+        const R_TYPE_BUCKETS = [
+          { key: 'Ic-BL', color: '#e05252' },
+          { key: 'Ic',    color: '#9b7ab8' },
+          { key: 'Ib',    color: '#6b8f71' },
+          { key: 'Ia',    color: '#c9a87c' },
+          { key: 'II',    color: '#6b82a8' },
+          { key: 'other', color: '#888888' },
+        ];
+        function rGetBucket(type) {
+          if (!type) return 'other';
+          for (const b of R_TYPE_BUCKETS) {
+            if (b.key !== 'other' && type.includes(b.key)) return b.key;
+          }
+          return 'other';
+        }
+        A.init.then(() => {
+          const aladin = A.aladin('#research-aladin-div', {
+            fov: 360,
+            projection: 'AIT',
+            cooFrame: 'equatorial',
+            showCooGrid: true,
+            showCooGridControl: false,
+            showFrame: false,
+            showLayerBox: false,
+            showGotoControl: false,
+            showShareControl: false,
+            showFullscreenControl: false,
+            survey: 'P/DSS2/color',
+          });
+          const rCatalogs = {};
+          R_TYPE_BUCKETS.forEach(b => {
+            rCatalogs[b.key] = A.catalog({ name: `SN ${b.key}`, onClick: 'showPopup', shape: 'circle', color: b.color, sourceSize: 5 });
+            aladin.addCatalog(rCatalogs[b.key]);
+          });
+          fetch('supernovae.json')
+            .then(r => r.json())
+            .then(data => {
+              document.getElementById('research-skymap-loading').style.display = 'none';
+              const byBucket = {};
+              R_TYPE_BUCKETS.forEach(b => byBucket[b.key] = []);
+              data.forEach(sn => {
+                const ra = parseFloat(sn.ra), dec = parseFloat(sn.dec);
+                if (isNaN(ra) || isNaN(dec)) return;
+                const bucket = rGetBucket(sn.type);
+                const bareName = (sn.name || '').replace(/^(SN|AT)\s*/i, '').trim();
+                const tnsLink = bareName ? `<a href="https://www.wis-tns.org/object/${bareName}" target="_blank" rel="noopener" style="color:#c9a87c">View on TNS →</a>` : '';
+                const descParts = [
+                  sn.type ? `<span style="font-size:0.85em">Type: <strong>${sn.type}</strong></span>` : '',
+                  sn.discovery_date ? `<span style="font-size:0.85em">Discovered: ${sn.discovery_date}</span>` : '',
+                  sn.redshift != null ? `<span style="font-size:0.85em"><em>z</em> = ${sn.redshift}</span>` : '',
+                  tnsLink,
+                ].filter(Boolean);
+                byBucket[bucket].push(A.source(ra, dec, { popupTitle: sn.name || 'Unknown', popupDesc: descParts.join('<br>') }));
+              });
+              R_TYPE_BUCKETS.forEach(b => { if (byBucket[b.key].length > 0) rCatalogs[b.key].addSources(byBucket[b.key]); });
+              document.getElementById('research-sn-count').textContent = data.length.toLocaleString();
+            })
+            .catch(() => { document.getElementById('research-skymap-loading').textContent = 'Could not load supernova data.'; });
+        });
+      </script>
+    </section>
+
     <!-- Code -->
     <section class="research-section">
       <div class="container">
