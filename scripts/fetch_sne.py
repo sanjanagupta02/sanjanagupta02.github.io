@@ -1,7 +1,6 @@
 """
-TNS supernova fetcher.
-Daily delta: python scripts/fetch_sne.py
-Initial full load: python scripts/fetch_sne.py --full
+TNS supernova fetcher — always downloads the full catalog.
+Usage: python scripts/fetch_sne.py
 
 Requires env vars: TNS_BOT_ID, TNS_BOT_NAME
 """
@@ -26,13 +25,8 @@ headers = {
     "user-agent": f'tns_marker{{"tns_id": {TNS_ID}, "type": "user", "name": "{TNS_NAME}"}}'
 }
 
-use_full = "--full" in sys.argv
-if use_full:
-    url = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects.csv.zip"
-    print("Downloading full TNS catalog (this may take a few minutes)...")
-else:
-    url = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects_delta.csv.zip"
-    print("Downloading TNS daily delta...")
+url = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects.csv.zip"
+print("Downloading full TNS catalog (this may take a few minutes)...")
 
 r = requests.get(url, headers=headers, timeout=300)
 r.raise_for_status()
@@ -94,19 +88,9 @@ for col in ['ra', 'dec', 'redshift']:
 # Drop rows missing coordinates
 sne = sne.dropna(subset=['ra', 'dec'])
 
-# Load existing JSON and merge
+# Full catalog replaces existing data
 json_path = "supernovae.json"
-if os.path.exists(json_path) and not use_full:
-    with open(json_path) as f:
-        existing = json.load(f)
-    existing_df = pd.DataFrame(existing) if existing else pd.DataFrame()
-
-    if not existing_df.empty and 'name' in existing_df.columns:
-        combined = pd.concat([existing_df, sne]).drop_duplicates(subset='name', keep='last')
-    else:
-        combined = sne
-else:
-    combined = sne
+combined = sne
 
 records = combined.to_dict(orient='records')
 
