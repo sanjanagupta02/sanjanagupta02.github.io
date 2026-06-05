@@ -94,13 +94,6 @@
       font-weight: 500;
     }
     .cat-btn--download:hover { background: var(--color-accent); color: var(--color-paper); }
-    .cat-btn--apply {
-      background: var(--color-accent);
-      border-color: var(--color-accent);
-      color: var(--color-paper);
-      font-weight: 500;
-    }
-    .cat-btn--apply:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
 
     /* ---- status bar ---- */
     .cat-status {
@@ -396,13 +389,12 @@
             <input type="number" id="cat-z-max" placeholder="max" step="0.001" min="0">
           </div>
 
-          <!-- Row 3: toggle + apply + actions -->
+          <!-- Row 3: toggle + actions -->
           <div class="cat-filters__row">
             <label class="cat-toggle">
               <input type="checkbox" id="cat-unclassified">
               show unclassified
             </label>
-            <button class="cat-btn cat-btn--apply" id="cat-apply" type="button">Apply date / redshift</button>
             <button class="cat-btn cat-btn--reset" id="cat-reset" type="button">Reset filters</button>
             <button class="cat-btn cat-btn--download" id="cat-download" type="button">Download CSV</button>
           </div>
@@ -565,7 +557,6 @@
     const elTbody     = document.getElementById('cat-tbody');
     const elPagination= document.getElementById('cat-pagination');
     const elReset     = document.getElementById('cat-reset');
-    const elApply     = document.getElementById('cat-apply');
     const elDownload  = document.getElementById('cat-download');
 
     // ---- Filter + sort ----
@@ -826,23 +817,23 @@
       el.addEventListener('change', () => { applyFilters(); render(); });
     });
 
-    // Date + number ranges: commit state then filter
-    function commitRangeState() {
-      stateDateFrom = elDateFrom.value || '';
-      stateDateTo   = elDateTo.value   || '';
-      stateZMin     = elZMin.value !== '' ? parseFloat(elZMin.value) : null;
-      stateZMax     = elZMax.value !== '' ? parseFloat(elZMax.value) : null;
-      applyFilters();
-      render();
+    // Date + number ranges: auto-filter with debounce (same pattern as search)
+    let rangeTimer;
+    function rangeChanged() {
+      clearTimeout(rangeTimer);
+      rangeTimer = setTimeout(() => {
+        stateDateFrom = elDateFrom.value || '';
+        stateDateTo   = elDateTo.value   || '';
+        stateZMin     = elZMin.value !== '' ? parseFloat(elZMin.value) : null;
+        stateZMax     = elZMax.value !== '' ? parseFloat(elZMax.value) : null;
+        applyFilters();
+        render();
+      }, 600);
     }
 
-    elApply.addEventListener('click', commitRangeState);
-
-    // Also apply on Enter key inside date/number inputs
     [elDateFrom, elDateTo, elZMin, elZMax].forEach(el => {
-      el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { commitRangeState(); }
-      });
+      el.addEventListener('input',  rangeChanged);
+      el.addEventListener('change', rangeChanged);
     });
 
     // Column sort
