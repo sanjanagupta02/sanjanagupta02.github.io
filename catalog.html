@@ -383,7 +383,7 @@
             </select>
           </div>
 
-          <!-- Row 2: date range + redshift range + apply -->
+          <!-- Row 2: date range + redshift range -->
           <div class="cat-filters__row">
             <label>Discovery date</label>
             <input type="date" id="cat-date-from" title="From date">
@@ -394,16 +394,15 @@
             <input type="number" id="cat-z-min" placeholder="min" step="0.001" min="0">
             <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
             <input type="number" id="cat-z-max" placeholder="max" step="0.001" min="0">
-
-            <button class="cat-btn cat-btn--apply" id="cat-apply" type="button">Apply</button>
           </div>
 
-          <!-- Row 3: toggle + actions -->
+          <!-- Row 3: toggle + apply + actions -->
           <div class="cat-filters__row">
             <label class="cat-toggle">
               <input type="checkbox" id="cat-unclassified">
               show unclassified
             </label>
+            <button class="cat-btn cat-btn--apply" id="cat-apply" type="button">Apply date / redshift</button>
             <button class="cat-btn cat-btn--reset" id="cat-reset" type="button">Reset filters</button>
             <button class="cat-btn cat-btn--download" id="cat-download" type="button">Download CSV</button>
           </div>
