@@ -312,7 +312,7 @@
               }
             });
           });
-          fetch('supernovae.json')
+          fetch('supernovae_database/supernovae.json')
             .then(r => r.json())
             .then(data => {
               document.getElementById('research-skymap-loading').style.display = 'none';

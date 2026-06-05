@@ -89,7 +89,7 @@ for col in ['ra', 'dec', 'redshift']:
 sne = sne.dropna(subset=['ra', 'dec'])
 
 # Full catalog replaces existing data
-json_path = "supernovae.json"
+json_path = "supernovae_database/supernovae.json"
 combined = sne
 
 records = combined.to_dict(orient='records')
