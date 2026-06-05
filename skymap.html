@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive sky map of all classified supernovae from the Transient Name Server, updated daily.">
+  <meta name="description" content="Interactive sky map of supernovae from the Transient Name Server and the Open Supernova Catalog, plotted by sky position.">
   <title>Supernova Sky Map — Sanjana Gupta</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,8 +145,8 @@
       <div class="container">
         <h1 class="page-header__title">Supernova Sky Map</h1>
         <p class="page-header__subtitle">
-          All classified supernovae from the Transient Name Server, plotted by sky position.
-          Zoom in to interact with individual objects. Updated daily.
+          Supernovae from the Transient Name Server and the Open Supernova Catalog, plotted by sky position.
+          Zoom in to interact with individual objects. TNS data updated daily.
         </p>
       </div>
     </section>
@@ -179,8 +179,9 @@
 
       <div class="container">
         <p class="skymap-attribution">
-          Data: <a href="https://www.wis-tns.org" target="_blank" rel="noopener">Transient Name Server</a> (IAU).
-          Updated daily via GitHub Actions.
+          Data: <a href="https://www.wis-tns.org" target="_blank" rel="noopener">Transient Name Server</a> (IAU) &amp;
+          <a href="https://github.com/astrocatalogs/supernovae" target="_blank" rel="noopener">Open Supernova Catalog</a>.
+          TNS updated daily.
         </p>
       </div>
     </section>
@@ -269,7 +270,7 @@
         if (d.type)       html += `<div style="color:${sc}">Type <span style="color:${tc};margin-left:6px">${d.type}</span></div>`;
         if (d.discovered) html += `<div style="color:${sc}">Discovered <span style="color:${tc};margin-left:6px">${d.discovered}</span></div>`;
         if (d.z != null)  html += `<div style="color:${sc}"><em>z</em> <span style="color:${tc};margin-left:6px">${d.z}</span></div>`;
-        if (d.bareName)   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
+        if (d.bareName && d.source !== 'OSC')   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
         snPopup.innerHTML = html;
         snPopup.style.display = 'block';
         const pw = snPopup.offsetWidth || 260;
@@ -345,6 +346,7 @@
               discovered: sn.discovery_date ? sn.discovery_date.slice(0, 10) : null,
               z:         sn.redshift != null ? sn.redshift : null,
               bareName:  bareName || null,
+              source:    sn.source || null,
             }));
           });
 

@@ -178,7 +178,7 @@
       <div class="container">
         <h2 class="research-section__title">Supernova Sky Map</h2>
         <p style="color: var(--color-text-soft); font-size: 0.95rem; margin-bottom: var(--space-md);">
-          All classified supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: none;">Transient Name Server</a>, plotted by sky position. Updated daily. <a href="skymap.html" style="color: var(--color-accent); text-decoration: none;">Open full map →</a>
+          Supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: none;">Transient Name Server</a> and the <a href="https://github.com/astrocatalogs/supernovae" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: none;">Open Supernova Catalog</a>, plotted by sky position. TNS data updated daily. <a href="skymap.html" style="color: var(--color-accent); text-decoration: none;">Open full map →</a>
         </p>
 
         <div id="research-sn-legend" style="display:flex; flex-wrap:wrap; gap: var(--space-md); align-items:center; margin-bottom: var(--space-md);">
@@ -274,7 +274,7 @@
             if (d.type)       html += `<div style="color:${sc}">Type <span style="color:${tc};margin-left:6px">${d.type}</span></div>`;
             if (d.discovered) html += `<div style="color:${sc}">Discovered <span style="color:${tc};margin-left:6px">${d.discovered}</span></div>`;
             if (d.z != null)  html += `<div style="color:${sc}"><em>z</em> <span style="color:${tc};margin-left:6px">${d.z}</span></div>`;
-            if (d.bareName)   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
+            if (d.bareName && d.source !== 'OSC')   html += `<div style="margin-top:8px"><a href="https://www.wis-tns.org/object/${d.bareName}" target="_blank" rel="noopener" style="color:#c9a87c;text-decoration:none">View on TNS →</a></div>`;
             rPopup.innerHTML = html;
             rPopup.style.display = 'block';
             const pw = rPopup.offsetWidth || 260;
@@ -329,6 +329,7 @@
                   discovered: sn.discovery_date ? sn.discovery_date.slice(0, 10) : null,
                   z:         sn.redshift != null ? sn.redshift : null,
                   bareName:  bareName || null,
+                  source:    sn.source || null,
                 }));
               });
               R_TYPE_BUCKETS.forEach(b => { if (byBucket[b.key].length > 0) rCatalogs[b.key].addSources(byBucket[b.key]); });
