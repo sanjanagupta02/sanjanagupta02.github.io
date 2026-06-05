@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Searchable catalog of supernovae from the Transient Name Server and the Open Supernova Catalog. Filter by type, date, redshift, and more.">
+  <meta name="description" content="Searchable catalog of all classified supernovae from the Transient Name Server and the Open Supernova Catalog. Filter by type, date, redshift, and more.">
   <title>Supernova Catalog — Sanjana Gupta</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -254,9 +254,9 @@
       <div class="container">
         <h1 class="page-header__title">Supernova Catalog</h1>
         <p class="page-header__subtitle">
-          59,000+ supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Transient Name Server</a>
+          All classified supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Transient Name Server</a>
           and the <a href="https://github.com/astrocatalogs/supernovae" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Open Supernova Catalog</a>.
-          Filter, search, and download. <a href="skymap.html" style="color:var(--color-accent);text-decoration:none">View on sky map →</a>
+          <a href="skymap.html" style="color:var(--color-accent);text-decoration:none">View on sky map →</a>
         </p>
       </div>
     </section>
@@ -491,6 +491,18 @@
       return 'other';
     }
 
+    // ---- Date normalization (zero-pad year so string comparison works) ----
+    // '393-02-27' --> '0393-02-27', '2026-06-01' stays '2026-06-01'
+    function normDate(d) {
+      if (!d) return '';
+      const s = d.slice(0, 10);
+      const dash = s.indexOf('-');
+      if (dash > 0 && dash < 4) {
+        return s.slice(0, dash).padStart(4, '0') + s.slice(dash);
+      }
+      return s;
+    }
+
     // ---- Coordinate formatting ----
     function raToHMS(deg) {
       const h  = deg / 15;
@@ -571,10 +583,10 @@
         // survey / reporting group
         if (group && sn.reporting_group !== group) return false;
 
-        // date range
-        const date = (sn.discovery_date || '').slice(0, 10);
-        if (dateFrom && date && date < dateFrom) return false;
-        if (dateTo   && date && date > dateTo)   return false;
+        // date range (normalize year to 4 digits before comparing)
+        const date = normDate(sn.discovery_date || '');
+        if (dateFrom && date && date < normDate(dateFrom)) return false;
+        if (dateTo   && date && date > normDate(dateTo))   return false;
 
         // redshift range
         if (zMinVal !== null && (sn.redshift == null || sn.redshift < zMinVal)) return false;
@@ -603,8 +615,8 @@
         }
 
         if (col === 'discovery_date') {
-          av = av || '';
-          bv = bv || '';
+          av = normDate(av || '');
+          bv = normDate(bv || '');
         } else {
           av = (av || '').toString().toLowerCase();
           bv = (bv || '').toString().toLowerCase();
