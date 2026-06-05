@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Searchable catalog of all classified supernovae from the Transient Name Server and the Open Supernova Catalog. Filter by type, date, redshift, and more.">
+  <meta name="description" content="Searchable catalog of all classified supernovae from the Transient Name Server and the Open Supernova Catalog. Filter by type, redshift, survey, and more.">
   <title>Supernova Catalog — Sanjana Gupta</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,6 @@
       white-space: nowrap;
     }
     .cat-filters input[type="text"],
-    .cat-filters input[type="date"],
     .cat-filters input[type="number"],
     .cat-filters select {
       font-family: var(--font-body);
@@ -49,13 +48,11 @@
       transition: border-color 0.15s;
     }
     .cat-filters input[type="text"]:focus,
-    .cat-filters input[type="date"]:focus,
     .cat-filters input[type="number"]:focus,
     .cat-filters select:focus {
       border-color: var(--color-accent);
     }
     .cat-filters input[type="text"]      { min-width: 180px; }
-    .cat-filters input[type="date"]      { min-width: 130px; }
     .cat-filters input[type="number"]    { width: 90px; }
     .cat-filters select                  { min-width: 130px; }
     /* toggle */
@@ -376,14 +373,9 @@
             </select>
           </div>
 
-          <!-- Row 2: date range + redshift range -->
+          <!-- Row 2: redshift range -->
           <div class="cat-filters__row">
-            <label>Discovery date</label>
-            <input type="text" id="cat-date-from" placeholder="YYYY-MM-DD" maxlength="10" style="width:110px;font-family:var(--font-mono);font-size:0.82rem">
-            <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
-            <input type="text" id="cat-date-to"   placeholder="YYYY-MM-DD" maxlength="10" style="width:110px;font-family:var(--font-mono);font-size:0.82rem">
-
-            <label style="margin-left:0.5rem">Redshift</label>
+            <label>Redshift</label>
             <input type="number" id="cat-z-min" placeholder="min" step="0.001" min="0">
             <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
             <input type="number" id="cat-z-max" placeholder="max" step="0.001" min="0">
@@ -535,20 +527,15 @@
     let sortCol      = 'discovery_date';
     let sortDir      = 'desc';
 
-    // Range filter state -- only updated when Apply is clicked or Reset is clicked
-    // (never read from DOM inputs directly inside applyFilters)
-    let stateDateFrom = '';
-    let stateDateTo   = '';
-    let stateZMin     = null;
-    let stateZMax     = null;
+    // Redshift range state -- only updated via rangeChanged
+    let stateZMin = null;
+    let stateZMax = null;
 
     // ---- DOM refs ----
     const elSearch    = document.getElementById('cat-search');
     const elType      = document.getElementById('cat-type');
     const elCatalog   = document.getElementById('cat-catalog');
     const elGroup     = document.getElementById('cat-group');
-    const elDateFrom  = document.getElementById('cat-date-from');
-    const elDateTo    = document.getElementById('cat-date-to');
     const elZMin      = document.getElementById('cat-z-min');
     const elZMax      = document.getElementById('cat-z-max');
     const elUnclass   = document.getElementById('cat-unclassified');
@@ -566,9 +553,6 @@
       const catalog     = elCatalog.value;
       const group       = elGroup.value;
       const showUnclass = elUnclass.checked;
-      // date + z come from explicit state, not DOM (set by Apply / Reset)
-      const dateFrom    = stateDateFrom;
-      const dateTo      = stateDateTo;
       const zMinVal     = stateZMin;
       const zMaxVal     = stateZMax;
 
@@ -590,11 +574,6 @@
 
         // survey / reporting group
         if (group && sn.reporting_group !== group) return false;
-
-        // date range (normalize year to 4 digits before comparing)
-        const date = normDate(sn.discovery_date || '');
-        if (dateFrom && date && date < normDate(dateFrom)) return false;
-        if (dateTo   && date && date > normDate(dateTo))   return false;
 
         // redshift range
         if (zMinVal !== null && (sn.redshift == null || sn.redshift < zMinVal)) return false;
@@ -817,21 +796,19 @@
       el.addEventListener('change', () => { applyFilters(); render(); });
     });
 
-    // Date + number ranges: auto-filter with debounce (same pattern as search)
+    // Redshift range: auto-filter with debounce
     let rangeTimer;
     function rangeChanged() {
       clearTimeout(rangeTimer);
       rangeTimer = setTimeout(() => {
-        stateDateFrom = elDateFrom.value || '';
-        stateDateTo   = elDateTo.value   || '';
-        stateZMin     = elZMin.value !== '' ? parseFloat(elZMin.value) : null;
-        stateZMax     = elZMax.value !== '' ? parseFloat(elZMax.value) : null;
+        stateZMin = elZMin.value !== '' ? parseFloat(elZMin.value) : null;
+        stateZMax = elZMax.value !== '' ? parseFloat(elZMax.value) : null;
         applyFilters();
         render();
       }, 600);
     }
 
-    [elDateFrom, elDateTo, elZMin, elZMax].forEach(el => {
+    [elZMin, elZMax].forEach(el => {
       el.addEventListener('input',  rangeChanged);
       el.addEventListener('change', rangeChanged);
     });
@@ -853,20 +830,15 @@
     });
 
     elReset.addEventListener('click', () => {
-      elSearch.value         = '';
-      elType.value           = '';
-      elCatalog.value        = 'all';
-      elGroup.value          = '';
-      elDateFrom.value = '';
-      elDateTo.value   = '';
-      elZMin.value           = '';
-      elZMax.value           = '';
-      elUnclass.checked      = false;
-      // clear range state
-      stateDateFrom = '';
-      stateDateTo   = '';
-      stateZMin     = null;
-      stateZMax     = null;
+      elSearch.value    = '';
+      elType.value      = '';
+      elCatalog.value   = 'all';
+      elGroup.value     = '';
+      elZMin.value      = '';
+      elZMax.value      = '';
+      elUnclass.checked = false;
+      stateZMin = null;
+      stateZMax = null;
       sortCol = 'discovery_date';
       sortDir = 'desc';
       applyFilters();
