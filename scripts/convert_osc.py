@@ -191,20 +191,38 @@ with open(INPUT_CSV, newline='', encoding='utf-8') as f:
         })
 
 # ------------------------------------------------------------------ #
+# Deduplicate -- keep the entry with the most non-null fields
+# ------------------------------------------------------------------ #
+seen = {}
+for rec in records:
+    key = rec['name'].strip().lower()
+    if key not in seen:
+        seen[key] = rec
+    else:
+        existing_score = sum(1 for v in seen[key].values() if v is not None)
+        new_score      = sum(1 for v in rec.values()       if v is not None)
+        if new_score > existing_score:
+            seen[key] = rec
+
+deduped    = list(seen.values())
+n_dupes    = len(records) - len(deduped)
+
+# ------------------------------------------------------------------ #
 # Report
 # ------------------------------------------------------------------ #
 total_rows = skipped_excl + skipped_coords + len(records)
 print(f'Total OSC rows read  : {total_rows}')
 print(f'Excluded (non-SN)    : {skipped_excl}  (Candidate / LGRB / removed / Galaxy / AGN / CV / LPV)')
 print(f'Skipped (no coords)  : {skipped_coords}')
-print(f'Written to JSON      : {len(records)}')
+print(f'Duplicates removed   : {n_dupes}')
+print(f'Written to JSON      : {len(deduped)}')
 
-typed   = sum(1 for r in records if r['type'])
-untyped = len(records) - typed
+typed   = sum(1 for r in deduped if r['type'])
+untyped = len(deduped) - typed
 print(f'  with type          : {typed}')
 print(f'  without type       : {untyped}')
 
 with open(OUTPUT_JSON, 'w') as f:
-    json.dump(records, f, separators=(',', ':'))
+    json.dump(deduped, f, separators=(',', ':'))
 
 print(f'\nSaved --> {OUTPUT_JSON}')
