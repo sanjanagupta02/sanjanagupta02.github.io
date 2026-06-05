@@ -379,9 +379,9 @@
           <!-- Row 2: date range + redshift range -->
           <div class="cat-filters__row">
             <label>Discovery date</label>
-            <input type="date" id="cat-date-from" title="From date">
+            <input type="text" id="cat-date-from" placeholder="YYYY-MM-DD" maxlength="10" style="width:110px;font-family:var(--font-mono);font-size:0.82rem">
             <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
-            <input type="date" id="cat-date-to"   title="To date">
+            <input type="text" id="cat-date-to"   placeholder="YYYY-MM-DD" maxlength="10" style="width:110px;font-family:var(--font-mono);font-size:0.82rem">
 
             <label style="margin-left:0.5rem">Redshift</label>
             <input type="number" id="cat-z-min" placeholder="min" step="0.001" min="0">
@@ -857,8 +857,8 @@
       elType.value           = '';
       elCatalog.value        = 'all';
       elGroup.value          = '';
-      elDateFrom.valueAsDate = null;
-      elDateTo.valueAsDate   = null;
+      elDateFrom.value = '';
+      elDateTo.value   = '';
       elZMin.value           = '';
       elZMax.value           = '';
       elUnclass.checked      = false;
