@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Searchable catalog of supernovae from the Transient Name Server and the Open Supernova Catalog. Filter by type, date, redshift, and more.">
+  <title>Supernova Catalog — Sanjana Gupta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+
+  <style>
+    /* ---- filter bar ---- */
+    .cat-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .cat-filters__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+    .cat-filters label {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .cat-filters input[type="text"],
+    .cat-filters input[type="date"],
+    .cat-filters input[type="number"],
+    .cat-filters select {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-text);
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 0.3rem 0.55rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .cat-filters input[type="text"]:focus,
+    .cat-filters input[type="date"]:focus,
+    .cat-filters input[type="number"]:focus,
+    .cat-filters select:focus {
+      border-color: var(--color-accent);
+    }
+    .cat-filters input[type="text"]      { min-width: 180px; }
+    .cat-filters input[type="date"]      { min-width: 130px; }
+    .cat-filters input[type="number"]    { width: 90px; }
+    .cat-filters select                  { min-width: 130px; }
+    /* toggle */
+    .cat-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.83rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      user-select: none;
+    }
+    .cat-toggle input[type="checkbox"] { accent-color: var(--color-accent); width: 14px; height: 14px; cursor: pointer; }
+    /* buttons */
+    .cat-btn {
+      font-family: var(--font-body);
+      font-size: 0.83rem;
+      padding: 0.32rem 0.85rem;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .cat-btn--reset {
+      background: transparent;
+      color: var(--color-text-muted);
+    }
+    .cat-btn--reset:hover { border-color: var(--color-accent); color: var(--color-text); }
+    .cat-btn--download {
+      background: var(--color-accent-soft);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      font-weight: 500;
+    }
+    .cat-btn--download:hover { background: var(--color-accent); color: var(--color-paper); }
+
+    /* ---- status bar ---- */
+    .cat-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--color-text-soft);
+      font-family: var(--font-mono);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* ---- table ---- */
+    .cat-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+    }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .cat-table th {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: var(--color-light);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .cat-table th:hover { color: var(--color-text); }
+    .cat-table th.sorted { color: var(--color-accent); }
+    .cat-table th .sort-arrow { margin-left: 4px; opacity: 0.6; }
+    .cat-table td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--color-border-light);
+      color: var(--color-text);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .cat-table tr:last-child td { border-bottom: none; }
+    .cat-table tr:hover td { background: var(--color-accent-soft); }
+    /* mono columns */
+    .cat-table td.mono { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-muted); }
+    /* name link */
+    .cat-table td.name-cell a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .cat-table td.name-cell a:hover { text-decoration: underline; }
+    .cat-table td.name-cell span { font-weight: 500; }
+    /* type cell */
+    .type-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      flex-shrink: 0;
+      vertical-align: middle;
+      position: relative; top: -1px;
+    }
+    /* catalog badge */
+    .cat-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .cat-badge--tns     { color: #6b82a8; border-color: #6b82a8; background: rgba(107,130,168,0.08); }
+    .cat-badge--osc     { color: #7ab5a0; border-color: #7ab5a0; background: rgba(122,181,160,0.08); }
+    .cat-badge--both    { color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-soft); }
+
+    /* ---- pagination ---- */
+    .cat-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .cat-page-btn {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cat-page-btn:hover:not(:disabled) { border-color: var(--color-accent); color: var(--color-accent); }
+    .cat-page-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-paper); font-weight: 600; }
+    .cat-page-btn:disabled { opacity: 0.35; cursor: default; }
+    .cat-page-ellipsis { color: var(--color-text-soft); font-size: 0.78rem; padding: 0 0.2rem; font-family: var(--font-mono); }
+
+    /* loading */
+    .cat-loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--color-text-soft);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link nav__link--active">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+        </ul>
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Supernova Catalog</h1>
+        <p class="page-header__subtitle">
+          59,000+ supernovae from the <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Transient Name Server</a>
+          and the <a href="https://github.com/astrocatalogs/supernovae" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Open Supernova Catalog</a>.
+          Filter, search, and download. <a href="skymap.html" style="color:var(--color-accent);text-decoration:none">View on sky map →</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--compact">
+      <div class="container">
+
+        <!-- Filters -->
+        <div class="cat-filters">
+          <!-- Row 1: search + type + catalog + survey -->
+          <div class="cat-filters__row">
+            <label for="cat-search">Search</label>
+            <input type="text" id="cat-search" placeholder="name..." autocomplete="off" spellcheck="false">
+
+            <label for="cat-type">Type</label>
+            <select id="cat-type">
+              <option value="">All classified</option>
+              <option value="Ia">Ia</option>
+              <option value="Ia-CSM">Ia-CSM</option>
+              <option value="Iax">Iax</option>
+              <option value="II">II</option>
+              <option value="IIn">IIn</option>
+              <option value="IIb">IIb</option>
+              <option value="Ib">Ib</option>
+              <option value="Ibn">Ibn</option>
+              <option value="Ic">Ic</option>
+              <option value="Icn">Icn</option>
+              <option value="Ic-BL">Ic-BL</option>
+              <option value="other">Other</option>
+            </select>
+
+            <label for="cat-catalog">Catalog</label>
+            <select id="cat-catalog">
+              <option value="all">All</option>
+              <option value="TNS">TNS</option>
+              <option value="OSC">OSC</option>
+              <option value="TNS+OSC">Both</option>
+            </select>
+
+            <label for="cat-group">Survey</label>
+            <select id="cat-group">
+              <option value="">All</option>
+              <option value="ALeRCE">ALeRCE</option>
+              <option value="AMPEL">AMPEL</option>
+              <option value="ANTARES">ANTARES</option>
+              <option value="ASAS-SN">ASAS-SN</option>
+              <option value="ATLAS">ATLAS</option>
+              <option value="ATS">ATS</option>
+              <option value="BlackGEM">BlackGEM</option>
+              <option value="BOSS">BOSS</option>
+              <option value="CSNS">CSNS</option>
+              <option value="DCAP">DCAP</option>
+              <option value="DECam-GROWTH">DECam-GROWTH</option>
+              <option value="DES">DES</option>
+              <option value="DESGW">DESGW</option>
+              <option value="DESIRT">DESIRT</option>
+              <option value="DLT40">DLT40</option>
+              <option value="ePESSTO">ePESSTO</option>
+              <option value="ePESSTO+">ePESSTO+</option>
+              <option value="F. D. Romanov">F. D. Romanov</option>
+              <option value="Fink">Fink</option>
+              <option value="GaiaAlerts">GaiaAlerts</option>
+              <option value="Gattini">Gattini</option>
+              <option value="Global SN Project">Global SN Project</option>
+              <option value="GOTO">GOTO</option>
+              <option value="GW-MMADS">GW-MMADS</option>
+              <option value="HETH">HETH</option>
+              <option value="HOLISMOKES">HOLISMOKES</option>
+              <option value="HSC">HSC</option>
+              <option value="iPTF">iPTF</option>
+              <option value="ISSP">ISSP</option>
+              <option value="JADES">JADES</option>
+              <option value="JIST">JIST</option>
+              <option value="J-VAR">J-VAR</option>
+              <option value="LAST">LAST</option>
+              <option value="Lasair">Lasair</option>
+              <option value="LOSS">LOSS</option>
+              <option value="LSQ">LSQ</option>
+              <option value="MASTER">MASTER</option>
+              <option value="MeerLICHT">MeerLICHT</option>
+              <option value="MUSSES">MUSSES</option>
+              <option value="NUTS2">NUTS2</option>
+              <option value="OGLE">OGLE</option>
+              <option value="Pan-STARRS">Pan-STARRS</option>
+              <option value="PESSTO">PESSTO</option>
+              <option value="PIKA">PIKA</option>
+              <option value="POSS">POSS</option>
+              <option value="PSH">PSH</option>
+              <option value="PTSS">PTSS</option>
+              <option value="RANSSP">RANSSP</option>
+              <option value="REFITT">REFITT</option>
+              <option value="RTSG">RTSG</option>
+              <option value="SAGUARO">SAGUARO</option>
+              <option value="SGLF">SGLF</option>
+              <option value="Shadow">Shadow</option>
+              <option value="SIRAH">SIRAH</option>
+              <option value="SKYS">SKYS</option>
+              <option value="SkyMapper">SkyMapper</option>
+              <option value="SNHunt">SNHunt</option>
+              <option value="STARGATE">STARGATE</option>
+              <option value="STSP">STSP</option>
+              <option value="SUNBIRD">SUNBIRD</option>
+              <option value="TAROT">TAROT</option>
+              <option value="TCD">TCD</option>
+              <option value="TMTS">TMTS</option>
+              <option value="TNTS">TNTS</option>
+              <option value="Tomo-e Gozen">Tomo-e Gozen</option>
+              <option value="TSST_COSMOS_3D">TSST_COSMOS_3D</option>
+              <option value="TSST_VENUS">TSST_VENUS</option>
+              <option value="ULL-ASTRO-MASTER">ULL-ASTRO-MASTER</option>
+              <option value="WFST">WFST</option>
+              <option value="XOSS">XOSS</option>
+              <option value="XTSS">XTSS</option>
+              <option value="YSE">YSE</option>
+              <option value="ZUDS">ZUDS</option>
+              <option value="ZTF">ZTF</option>
+            </select>
+          </div>
+
+          <!-- Row 2: date range + redshift range -->
+          <div class="cat-filters__row">
+            <label>Discovery date</label>
+            <input type="date" id="cat-date-from" title="From date">
+            <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
+            <input type="date" id="cat-date-to"   title="To date">
+
+            <label style="margin-left:0.5rem">Redshift</label>
+            <input type="number" id="cat-z-min" placeholder="min" step="0.001" min="0">
+            <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
+            <input type="number" id="cat-z-max" placeholder="max" step="0.001" min="0">
+          </div>
+
+          <!-- Row 3: toggle + actions -->
+          <div class="cat-filters__row">
+            <label class="cat-toggle">
+              <input type="checkbox" id="cat-unclassified">
+              show unclassified
+            </label>
+            <button class="cat-btn cat-btn--reset" id="cat-reset">Reset filters</button>
+            <button class="cat-btn cat-btn--download" id="cat-download">Download CSV</button>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="cat-status">
+          <span id="cat-count">Loading...</span>
+          <span id="cat-page-info"></span>
+        </div>
+
+        <!-- Table -->
+        <div class="cat-table-wrap">
+          <table class="cat-table" id="cat-table">
+            <thead>
+              <tr>
+                <th data-col="name">Name <span class="sort-arrow"></span></th>
+                <th data-col="type">Type <span class="sort-arrow"></span></th>
+                <th data-col="discovery_date" class="sorted">Discovered <span class="sort-arrow">↓</span></th>
+                <th data-col="redshift">Redshift <span class="sort-arrow"></span></th>
+                <th data-col="ra">RA <span class="sort-arrow"></span></th>
+                <th data-col="dec">Dec <span class="sort-arrow"></span></th>
+                <th data-col="reporting_group">Survey <span class="sort-arrow"></span></th>
+                <th data-col="source">Catalog <span class="sort-arrow"></span></th>
+              </tr>
+            </thead>
+            <tbody id="cat-tbody">
+              <tr><td colspan="8" class="cat-loading">Loading catalog...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="cat-pagination" id="cat-pagination"></div>
+
+        <!-- Data credit -->
+        <p style="margin-top:1.5rem;font-size:0.78rem;color:var(--color-text-soft);font-family:var(--font-mono);">
+          Data: <a href="https://www.wis-tns.org" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Transient Name Server</a> (IAU) &amp;
+          <a href="https://github.com/astrocatalogs/supernovae" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">Open Supernova Catalog</a>.
+          TNS updated daily.
+        </p>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    const PAGE_SIZE = 100;
+
+    // ---- Type buckets (same as sky map) ----
+    const TYPE_BUCKETS = [
+      { key: 'Ic-BL',  color: '#e05252' },
+      { key: 'Icn',    color: '#c47aaa' },
+      { key: 'Ic',     color: '#9b7ab8' },
+      { key: 'IIb',    color: '#7ab5a0' },
+      { key: 'Ibn',    color: '#4a7a5a' },
+      { key: 'Ib',     color: '#6b8f71' },
+      { key: 'IIn',    color: '#4ab5c4' },
+      { key: 'II',     color: '#6b82a8' },
+      { key: 'Iax',    color: '#e8d060' },
+      { key: 'Ia-CSM', color: '#e8974a' },
+      { key: 'Ia',     color: '#c9a87c' },
+      { key: 'other',  color: '#888888' },
+    ];
+    const BUCKET_COLOR = {};
+    TYPE_BUCKETS.forEach(b => { BUCKET_COLOR[b.key] = b.color; });
+
+    function getBucket(type) {
+      if (!type) return null;
+      const t = type.replace(/^SN\s+/i, '').trim();
+      if (t === 'Ic-BL' || t.startsWith('Ic-BL')) return 'Ic-BL';
+      if (t.startsWith('Icn'))    return 'Icn';
+      if (t.startsWith('Ic'))     return 'Ic';
+      if (t === 'IIb' || t.startsWith('IIb-')) return 'IIb';
+      if (t.startsWith('Ibn'))    return 'Ibn';
+      if (t.startsWith('Ib') && !t.startsWith('Ib/')) return 'Ib';
+      if (t.startsWith('IIn'))    return 'IIn';
+      if (t.startsWith('II'))     return 'II';
+      if (t.startsWith('Iax'))    return 'Iax';
+      if (t.startsWith('Ia-CSM')) return 'Ia-CSM';
+      if (t.startsWith('Ia'))     return 'Ia';
+      return 'other';
+    }
+
+    // ---- Coordinate formatting ----
+    function raToHMS(deg) {
+      const h  = deg / 15;
+      const hh = Math.floor(h);
+      const m  = (h - hh) * 60;
+      const mm = Math.floor(m);
+      const s  = (m - mm) * 60;
+      return String(hh).padStart(2,'0') + ':' +
+             String(mm).padStart(2,'0') + ':' +
+             s.toFixed(2).padStart(5,'0');
+    }
+
+    function decToDMS(deg) {
+      const sign = deg < 0 ? '-' : '+';
+      const abs  = Math.abs(deg);
+      const dd   = Math.floor(abs);
+      const m    = (abs - dd) * 60;
+      const mm   = Math.floor(m);
+      const s    = (m - mm) * 60;
+      return sign +
+             String(dd).padStart(2,'0') + ':' +
+             String(mm).padStart(2,'0') + ':' +
+             s.toFixed(1).padStart(4,'0');
+    }
+
+    // ---- State ----
+    let allData      = [];
+    let filteredData = [];
+    let currentPage  = 1;
+    let sortCol      = 'discovery_date';
+    let sortDir      = 'desc';
+
+    // ---- DOM refs ----
+    const elSearch    = document.getElementById('cat-search');
+    const elType      = document.getElementById('cat-type');
+    const elCatalog   = document.getElementById('cat-catalog');
+    const elGroup     = document.getElementById('cat-group');
+    const elDateFrom  = document.getElementById('cat-date-from');
+    const elDateTo    = document.getElementById('cat-date-to');
+    const elZMin      = document.getElementById('cat-z-min');
+    const elZMax      = document.getElementById('cat-z-max');
+    const elUnclass   = document.getElementById('cat-unclassified');
+    const elCount     = document.getElementById('cat-count');
+    const elPageInfo  = document.getElementById('cat-page-info');
+    const elTbody     = document.getElementById('cat-tbody');
+    const elPagination= document.getElementById('cat-pagination');
+    const elReset     = document.getElementById('cat-reset');
+    const elDownload  = document.getElementById('cat-download');
+
+    // ---- Filter + sort ----
+    function applyFilters() {
+      const search   = elSearch.value.trim().toLowerCase();
+      const type     = elType.value;
+      const catalog  = elCatalog.value;
+      const group    = elGroup.value;
+      const dateFrom = elDateFrom.value;
+      const dateTo   = elDateTo.value;
+      const zMinVal  = elZMin.value !== '' ? parseFloat(elZMin.value) : null;
+      const zMaxVal  = elZMax.value !== '' ? parseFloat(elZMax.value) : null;
+      const showUnclass = elUnclass.checked;
+
+      filteredData = allData.filter(sn => {
+        // unclassified toggle
+        if (!showUnclass && !sn.type) return false;
+
+        // type bucket filter
+        if (type) {
+          if (!sn.type) return false;
+          if (getBucket(sn.type) !== type) return false;
+        }
+
+        // name search
+        if (search && !(sn.name || '').toLowerCase().includes(search)) return false;
+
+        // catalog
+        if (catalog !== 'all' && sn.source !== catalog) return false;
+
+        // survey / reporting group
+        if (group && sn.reporting_group !== group) return false;
+
+        // date range
+        const date = (sn.discovery_date || '').slice(0, 10);
+        if (dateFrom && date && date < dateFrom) return false;
+        if (dateTo   && date && date > dateTo)   return false;
+
+        // redshift range
+        if (zMinVal !== null && (sn.redshift == null || sn.redshift < zMinVal)) return false;
+        if (zMaxVal !== null && (sn.redshift == null || sn.redshift > zMaxVal)) return false;
+
+        return true;
+      });
+
+      sortFiltered();
+      currentPage = 1;
+    }
+
+    function sortFiltered() {
+      const col = sortCol;
+      const dir = sortDir === 'asc' ? 1 : -1;
+
+      filteredData.sort((a, b) => {
+        let av = a[col];
+        let bv = b[col];
+
+        if (col === 'ra' || col === 'dec' || col === 'redshift') {
+          // numeric; nulls go to end
+          av = av ?? (dir > 0 ? Infinity : -Infinity);
+          bv = bv ?? (dir > 0 ? Infinity : -Infinity);
+          return (av - bv) * dir;
+        }
+
+        if (col === 'discovery_date') {
+          av = av || '';
+          bv = bv || '';
+        } else {
+          av = (av || '').toString().toLowerCase();
+          bv = (bv || '').toString().toLowerCase();
+        }
+
+        if (av < bv) return -1 * dir;
+        if (av > bv) return  1 * dir;
+        return 0;
+      });
+    }
+
+    // ---- Render ----
+    function render() {
+      const total  = filteredData.length;
+      const pages  = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > pages) currentPage = pages;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end   = Math.min(start + PAGE_SIZE, total);
+      const page  = filteredData.slice(start, end);
+
+      // Status bar
+      elCount.textContent = total.toLocaleString() + ' result' + (total !== 1 ? 's' : '');
+      elPageInfo.textContent = total > 0
+        ? `${(start + 1).toLocaleString()}–${end.toLocaleString()} of ${total.toLocaleString()}`
+        : '';
+
+      // Table rows
+      const frag = document.createDocumentFragment();
+      if (page.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="8" style="text-align:center;padding:2rem;color:var(--color-text-soft);font-family:var(--font-mono);font-size:0.83rem;">No results match the current filters.</td>`;
+        frag.appendChild(tr);
+      } else {
+        page.forEach(sn => {
+          const tr = document.createElement('tr');
+
+          // Name cell
+          const bareName = (sn.name || '').replace(/^(SN|AT)\s*/i, '').trim();
+          const nameHtml = (sn.source !== 'OSC' && bareName)
+            ? `<a href="https://www.wis-tns.org/object/${bareName}" target="_blank" rel="noopener">${esc(sn.name || '')}</a>`
+            : `<span>${esc(sn.name || '')}</span>`;
+
+          // Type cell
+          const bucket = getBucket(sn.type);
+          const dot    = bucket
+            ? `<span class="type-dot" style="background:${BUCKET_COLOR[bucket] || '#888'}"></span>`
+            : '';
+          const typeLabel = sn.type
+            ? sn.type.replace(/^SN\s+/i, '')
+            : '<span style="color:var(--color-text-soft);font-style:italic">--</span>';
+
+          // Catalog badge
+          const src = sn.source || '';
+          const badgeClass = src === 'TNS' ? 'cat-badge--tns'
+                           : src === 'OSC' ? 'cat-badge--osc'
+                           : 'cat-badge--both';
+          const badgeLabel = src === 'TNS+OSC' ? 'Both' : src;
+
+          // Discovery date
+          const date = sn.discovery_date ? sn.discovery_date.slice(0, 10) : '--';
+
+          // Redshift
+          const z = sn.redshift != null ? sn.redshift.toFixed(4) : '--';
+
+          // Coords
+          const ra  = sn.ra  != null ? raToHMS(sn.ra)   : '--';
+          const dec = sn.dec != null ? decToDMS(sn.dec)  : '--';
+
+          // Survey
+          const grp = sn.reporting_group || '--';
+
+          tr.innerHTML =
+            `<td class="name-cell">${nameHtml}</td>` +
+            `<td>${dot}${typeLabel}</td>` +
+            `<td class="mono">${date}</td>` +
+            `<td class="mono">${z}</td>` +
+            `<td class="mono">${ra}</td>` +
+            `<td class="mono">${dec}</td>` +
+            `<td style="color:var(--color-text-muted)">${esc(grp)}</td>` +
+            `<td><span class="cat-badge ${badgeClass}">${esc(badgeLabel)}</span></td>`;
+          frag.appendChild(tr);
+        });
+      }
+      elTbody.innerHTML = '';
+      elTbody.appendChild(frag);
+
+      renderPagination(pages);
+      updateSortHeaders();
+    }
+
+    function renderPagination(pages) {
+      elPagination.innerHTML = '';
+      if (pages <= 1) return;
+
+      function btn(label, page, disabled, active) {
+        const b = document.createElement('button');
+        b.className = 'cat-page-btn' + (active ? ' active' : '');
+        b.textContent = label;
+        b.disabled = disabled;
+        if (!disabled && !active) b.addEventListener('click', () => { currentPage = page; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        return b;
+      }
+
+      // Prev
+      elPagination.appendChild(btn('←', currentPage - 1, currentPage === 1, false));
+
+      // Page numbers: show first, last, current ±2, with ellipses
+      const show = new Set([1, pages, currentPage]);
+      for (let i = Math.max(1, currentPage - 2); i <= Math.min(pages, currentPage + 2); i++) show.add(i);
+      const sorted = [...show].sort((a, b) => a - b);
+
+      let prev = 0;
+      sorted.forEach(p => {
+        if (p - prev > 1) {
+          const e = document.createElement('span');
+          e.className = 'cat-page-ellipsis';
+          e.textContent = '...';
+          elPagination.appendChild(e);
+        }
+        elPagination.appendChild(btn(p, p, false, p === currentPage));
+        prev = p;
+      });
+
+      // Next
+      elPagination.appendChild(btn('→', currentPage + 1, currentPage === pages, false));
+    }
+
+    function updateSortHeaders() {
+      document.querySelectorAll('.cat-table th[data-col]').forEach(th => {
+        const col = th.dataset.col;
+        const arrow = th.querySelector('.sort-arrow');
+        if (col === sortCol) {
+          th.classList.add('sorted');
+          arrow.textContent = sortDir === 'asc' ? '↑' : '↓';
+        } else {
+          th.classList.remove('sorted');
+          arrow.textContent = '';
+        }
+      });
+    }
+
+    // ---- Escape HTML ----
+    function esc(str) {
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    // ---- CSV download ----
+    function downloadCSV() {
+      const headers = ['Name','Type','Discovery Date','Redshift','RA','Dec','Survey','Catalog'];
+      const rows = filteredData.map(sn => [
+        sn.name || '',
+        sn.type ? sn.type.replace(/^SN\s+/i,'') : '',
+        sn.discovery_date ? sn.discovery_date.slice(0,10) : '',
+        sn.redshift != null ? sn.redshift : '',
+        sn.ra  != null ? raToHMS(sn.ra)  : '',
+        sn.dec != null ? decToDMS(sn.dec) : '',
+        sn.reporting_group || '',
+        sn.source === 'TNS+OSC' ? 'Both' : (sn.source || ''),
+      ]);
+
+      const csv = [headers, ...rows]
+        .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+        .join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'supernovae_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ---- Event listeners ----
+    let searchTimer;
+    elSearch.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => { applyFilters(); render(); }, 300);
+    });
+
+    [elType, elCatalog, elGroup, elDateFrom, elDateTo, elZMin, elZMax, elUnclass].forEach(el => {
+      el.addEventListener('change', () => { applyFilters(); render(); });
+    });
+
+    // Column sort
+    document.querySelectorAll('.cat-table th[data-col]').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortCol = col;
+          sortDir = col === 'discovery_date' || col === 'redshift' ? 'desc' : 'asc';
+        }
+        sortFiltered();
+        currentPage = 1;
+        render();
+      });
+    });
+
+    elReset.addEventListener('click', () => {
+      elSearch.value   = '';
+      elType.value     = '';
+      elCatalog.value  = 'all';
+      elGroup.value    = '';
+      elDateFrom.value = '';
+      elDateTo.value   = '';
+      elZMin.value     = '';
+      elZMax.value     = '';
+      elUnclass.checked = false;
+      sortCol = 'discovery_date';
+      sortDir = 'desc';
+      applyFilters();
+      render();
+    });
+
+    elDownload.addEventListener('click', downloadCSV);
+
+    // ---- Load data ----
+    fetch('supernovae_database/supernovae.json')
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        allData = data;
+        applyFilters();
+        render();
+      })
+      .catch(err => {
+        elTbody.innerHTML = `<tr><td colspan="8" class="cat-loading">Could not load catalog data. (${err.message})</td></tr>`;
+        elCount.textContent = 'Error loading data.';
+      });
+
+  })();
+  </script>
+
+  <script data-goatcounter="https://stargazer137.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
