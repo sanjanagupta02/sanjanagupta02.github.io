@@ -293,7 +293,7 @@
               <option value="TNS+OSC">Both</option>
             </select>
 
-            <label for="cat-group">Survey</label>
+            <label for="cat-group">Group</label>
             <select id="cat-group">
               <option value="">All</option>
               <option value="ALeRCE">ALeRCE</option>
@@ -409,7 +409,7 @@
                 <th data-col="redshift">Redshift <span class="sort-arrow"></span></th>
                 <th data-col="ra">RA <span class="sort-arrow"></span></th>
                 <th data-col="dec">Dec <span class="sort-arrow"></span></th>
-                <th data-col="reporting_group">Survey <span class="sort-arrow"></span></th>
+                <th data-col="reporting_group">Group <span class="sort-arrow"></span></th>
                 <th data-col="source">Catalog <span class="sort-arrow"></span></th>
               </tr>
             </thead>
@@ -757,7 +757,7 @@
 
     // ---- CSV download ----
     function downloadCSV() {
-      const headers = ['Name','Type','Discovery Date','Redshift','RA','Dec','Survey','Catalog'];
+      const headers = ['Name','Type','Discovery Date','Redshift','RA','Dec','Group','Catalog'];
       const rows = filteredData.map(sn => [
         sn.name || '',
         sn.type ? sn.type.replace(/^SN\s+/i,'') : '',
