@@ -94,6 +94,13 @@
       font-weight: 500;
     }
     .cat-btn--download:hover { background: var(--color-accent); color: var(--color-paper); }
+    .cat-btn--apply {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-paper);
+      font-weight: 500;
+    }
+    .cat-btn--apply:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
 
     /* ---- status bar ---- */
     .cat-status {
@@ -376,7 +383,7 @@
             </select>
           </div>
 
-          <!-- Row 2: date range + redshift range -->
+          <!-- Row 2: date range + redshift range + apply -->
           <div class="cat-filters__row">
             <label>Discovery date</label>
             <input type="date" id="cat-date-from" title="From date">
@@ -387,6 +394,8 @@
             <input type="number" id="cat-z-min" placeholder="min" step="0.001" min="0">
             <span style="color:var(--color-text-soft);font-size:0.8rem">to</span>
             <input type="number" id="cat-z-max" placeholder="max" step="0.001" min="0">
+
+            <button class="cat-btn cat-btn--apply" id="cat-apply">Apply</button>
           </div>
 
           <!-- Row 3: toggle + actions -->
@@ -550,6 +559,7 @@
     const elTbody     = document.getElementById('cat-tbody');
     const elPagination= document.getElementById('cat-pagination');
     const elReset     = document.getElementById('cat-reset');
+    const elApply     = document.getElementById('cat-apply');
     const elDownload  = document.getElementById('cat-download');
 
     // ---- Filter + sort ----
@@ -796,14 +806,28 @@
     }
 
     // ---- Event listeners ----
+
+    // Search: auto-filter with debounce
     let searchTimer;
     elSearch.addEventListener('input', () => {
       clearTimeout(searchTimer);
       searchTimer = setTimeout(() => { applyFilters(); render(); }, 300);
     });
 
-    [elType, elCatalog, elGroup, elDateFrom, elDateTo, elZMin, elZMax, elUnclass].forEach(el => {
+    // Dropdowns + toggle: auto-filter immediately on change
+    [elType, elCatalog, elGroup, elUnclass].forEach(el => {
       el.addEventListener('change', () => { applyFilters(); render(); });
+    });
+
+    // Date + number ranges: require explicit Apply button click
+    // (browser change/input events for date inputs are unreliable cross-browser)
+    elApply.addEventListener('click', () => { applyFilters(); render(); });
+
+    // Also apply on Enter key inside date/number inputs
+    [elDateFrom, elDateTo, elZMin, elZMax].forEach(el => {
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { applyFilters(); render(); }
+      });
     });
 
     // Column sort
@@ -823,14 +847,15 @@
     });
 
     elReset.addEventListener('click', () => {
-      elSearch.value   = '';
-      elType.value     = '';
-      elCatalog.value  = 'all';
-      elGroup.value    = '';
-      elDateFrom.value = '';
-      elDateTo.value   = '';
-      elZMin.value     = '';
-      elZMax.value     = '';
+      elSearch.value    = '';
+      elType.value      = '';
+      elCatalog.value   = 'all';
+      elGroup.value     = '';
+      // valueAsDate = null is the reliable cross-browser way to clear date inputs
+      elDateFrom.valueAsDate = null;
+      elDateTo.valueAsDate   = null;
+      elZMin.value      = '';
+      elZMax.value      = '';
       elUnclass.checked = false;
       sortCol = 'discovery_date';
       sortDir = 'desc';
