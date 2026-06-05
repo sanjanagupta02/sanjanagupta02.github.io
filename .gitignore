@@ -6,4 +6,7 @@
 images_backup.zip
 images_backup
 instructions.txt
-supernovae_copy.json
+supernovae_database/supernovae_tns_copy.json
+supernovae_database/supernovae_osc.json
+supernovae_database/supernovae_master_copy.json
+supernovae_database/OpenSNCat.csv
