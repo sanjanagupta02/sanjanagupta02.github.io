@@ -343,12 +343,12 @@
         <ul class="nav__list">
           <li><a href="index.html" class="nav__link">Home</a></li>
           <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="almanac.html" class="nav__link nav__link--active">Almanac</a></li>
           <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
           <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
           <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
           <li><a href="bridges.html" class="nav__link">Bridges</a></li>
           <li><a href="connect.html" class="nav__link">Connect</a></li>
-          <li><a href="almanac.html" class="nav__link nav__link--active">Almanac</a></li>
         </ul>
         <button class="theme-toggle" aria-label="Toggle dark mode">
           <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -394,7 +394,7 @@
       <nav class="ob-tabnav" id="ob-tabnav">
         <button data-tab="deadlines" class="active">Deadlines</button>
         <button data-tab="radio">Radio observability</button>
-        <button data-tab="xray">X-ray sun visibility</button>
+        <button data-tab="xray">X-ray observability</button>
         <button data-tab="convert">Converters</button>
       </nav>
 
@@ -1056,7 +1056,8 @@
   }
 
   var PLOT_VOID="#0a0f1a",PLOT_TWILIGHT="#1a2744",PLOT_DUSK="#2a3f5f",
-      PLOT_STAR="#e8d5b7",PLOT_BAD="#d4795f",PLOT_ACCENT="#d4a017",PLOT_GOOD="#7fae84",PLOT_NEBULA="#c9a87c";
+      PLOT_STAR="#e8d5b7",PLOT_BAD="#d4795f",PLOT_MOON="#b05c7a",PLOT_ACCENT="#d4a017",PLOT_GOOD="#7fae84",PLOT_NEBULA="#c9a87c",
+      PLOT_BLUE="#8fa8c8";
 
   function buildElevationSVG(latDeg,decDeg,hardLimit,recLimit){
     var W=620,H=210,padL=42,padR=14,padT=14,padB=28;
@@ -1172,14 +1173,19 @@
   xMissionSel.addEventListener("change",updateXrayNote); updateXrayNote();
 
   function statusForMission(mission,sunSep,moonSep){
-    if(mission==="chandra"){if(sunSep<=46.2)return"blocked"; if(sunSep>=65&&sunSep<=135)return"preferred"; return"ok";}
-    if(mission==="swift"){return(sunSep<=46||moonSep<=23)?"blocked":"ok";}
-    if(mission==="nustar"){return(sunSep<=39||moonSep<=14)?"blocked":"ok";}
-    if(mission==="xmm"){return(sunSep>=70&&sunSep<=110)?"ok":"blocked";}
+    if(mission==="chandra"){if(sunSep<=46.2)return"sun-blocked"; if(sunSep>=65&&sunSep<=135)return"preferred"; return"ok";}
+    if(mission==="swift"){if(sunSep<=46)return"sun-blocked"; if(moonSep<=23)return"moon-blocked"; return"ok";}
+    if(mission==="nustar"){if(sunSep<=39)return"sun-blocked"; if(moonSep<=14)return"moon-blocked"; return"ok";}
+    if(mission==="xmm"){return(sunSep>=70&&sunSep<=110)?"ok":"sun-blocked";}
     return"ok";
   }
-  var STATUS_COLOR={blocked:PLOT_BAD,ok:PLOT_GOOD,preferred:PLOT_NEBULA};
-  var STATUS_LABEL={blocked:"blocked",ok:"observable",preferred:"observable (preferred pitch)"};
+  var STATUS_LABEL={"sun-blocked":"blocked (Sun)","moon-blocked":"blocked (Moon)",ok:"observable",preferred:"observable (preferred pitch)"};
+  function statusColor(status,mission){
+    if(status==="sun-blocked")return PLOT_BAD;
+    if(status==="moon-blocked")return PLOT_MOON;
+    if(status==="preferred")return PLOT_GOOD;
+    return mission==="chandra"?PLOT_BLUE:PLOT_GOOD;
+  }
 
   function monthLabels(year0){
     var names=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],out=[];
@@ -1205,9 +1211,9 @@
         var sun=sunRADec(d),moon=moonRADec(d);
         statuses.push(statusForMission(mission,angularSepDeg(sun.ra,sun.dec,t.ra,t.dec),angularSepDeg(moon.ra,moon.dec,t.ra,t.dec)));
       }
-      var counts={blocked:0,ok:0,preferred:0};
+      var counts={"sun-blocked":0,"moon-blocked":0,ok:0,preferred:0};
       statuses.forEach(function(s){counts[s]=(counts[s]||0)+1;});
-      var bar=statuses.map(function(s){return'<div style="background:'+STATUS_COLOR[s]+';"></div>';}).join("");
+      var bar=statuses.map(function(s){return'<div style="background:'+statusColor(s,mission)+';"></div>';}).join("");
       var todayStatus=statuses[0];
       var transitionIdx=-1;
       for(var j=1;j<statuses.length;j++){if(statuses[j]!==todayStatus){transitionIdx=j;break;}}
@@ -1220,9 +1226,10 @@
         '<div class="yearbar">'+bar+'</div>'+
         '<div class="monthlabels">'+monthLabels(day0)+'</div>'+
         '<div class="ob-legend">'+
-          '<span><span class="ob-dot" style="background:'+STATUS_COLOR.ok+'"></span>observable ('+counts.ok+' d)</span>'+
-          (mission==="chandra"?'<span><span class="ob-dot" style="background:'+STATUS_COLOR.preferred+'"></span>preferred pitch ('+counts.preferred+' d)</span>':'')+
-          '<span><span class="ob-dot" style="background:'+STATUS_COLOR.blocked+'"></span>blocked'+((mission==="swift"||mission==="nustar")?", Sun or Moon":", Sun")+' ('+counts.blocked+' d)</span>'+
+          '<span><span class="ob-dot" style="background:'+statusColor("ok",mission)+'"></span>observable ('+counts.ok+' d)</span>'+
+          (mission==="chandra"?'<span><span class="ob-dot" style="background:'+statusColor("preferred",mission)+'"></span>preferred pitch ('+counts.preferred+' d)</span>':'')+
+          '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>blocked, Sun ('+(counts["sun-blocked"]||0)+' d)</span>'+
+          ((mission==="swift"||mission==="nustar")?'<span><span class="ob-dot" style="background:'+PLOT_MOON+'"></span>blocked, Moon ('+(counts["moon-blocked"]||0)+' d)</span>':'')+
         '</div>'+
         '<p class="hint" style="margin-top:10px;">'+transitionText+'</p>'+
       '</div>';
