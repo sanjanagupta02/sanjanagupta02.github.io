@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tools and data for supernova research: a searchable catalog of 59,000+ supernovae and an observation planner for radio and X-ray facilities.">
+  <title>Almanac — Sanjana Gupta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+
+  <style>
+    .almanac-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-xl);
+      margin-top: var(--space-2xl);
+    }
+    .almanac-card {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: var(--space-xl);
+      background: var(--color-light);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .almanac-card:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      color: inherit;
+    }
+    .almanac-card__eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-text-soft);
+    }
+    .almanac-card__title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .almanac-card:hover .almanac-card__title {
+      color: var(--color-accent);
+    }
+    .almanac-card__desc {
+      font-size: 0.92rem;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .almanac-card__link {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+      margin-top: auto;
+    }
+    .almanac-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .almanac-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-soft);
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+          <li><a href="almanac.html" class="nav__link nav__link--active">Almanac</a></li>
+        </ul>
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Almanac</h1>
+        <p class="page-header__subtitle">
+          Data and tools for supernova research.
+        </p>
+      </div>
+    </section>
+
+    <section class="section--compact">
+      <div class="container">
+        <div class="almanac-grid">
+
+          <a href="catalog.html" class="almanac-card">
+            <p class="almanac-card__eyebrow">Dataset</p>
+            <h2 class="almanac-card__title">Supernova Catalog</h2>
+            <p class="almanac-card__desc">
+              59,000+ supernovae from the Transient Name Server and the Open Supernova Catalog,
+              merged into a single searchable table. Filter by type, redshift, and reporting group.
+              Download the full dataset as CSV. TNS entries updated daily.
+            </p>
+            <div class="almanac-card__tags">
+              <span class="almanac-tag">TNS</span>
+              <span class="almanac-tag">OSC</span>
+              <span class="almanac-tag">59k+ entries</span>
+              <span class="almanac-tag">daily updates</span>
+            </div>
+            <span class="almanac-card__link">Browse catalog →</span>
+          </a>
+
+          <a href="obs-planner.html" class="almanac-card">
+            <p class="almanac-card__eyebrow">Webtool</p>
+            <h2 class="almanac-card__title">Observation Planner</h2>
+            <p class="almanac-card__desc">
+              Proposal deadlines, elevation and visibility checks for radio (VLA, GMRT, MeerKAT, ASKAP)
+              and X-ray facilities (Chandra, Swift, NuSTAR, XMM-Newton), and coordinate/time converters.
+              Look up any supernova from the catalog by name to fill coordinates automatically.
+            </p>
+            <div class="almanac-card__tags">
+              <span class="almanac-tag">Radio</span>
+              <span class="almanac-tag">X-ray</span>
+              <span class="almanac-tag">Deadlines</span>
+              <span class="almanac-tag">Converters</span>
+            </div>
+            <span class="almanac-card__link">Open planner →</span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        © 2026 Sanjana Gupta. Made with curiosity <span>✦</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script data-goatcounter="https://stargazer137.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

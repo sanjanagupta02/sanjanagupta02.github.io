@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem("theme");if(t){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Proposal deadlines, elevation and visibility checks for radio and X-ray facilities, and converters for observation planning.">
+  <title>Observation Planner — Sanjana Gupta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%23c9a87c' stroke-width='3'/><circle cx='50' cy='50' r='4' fill='%23c9a87c'/></svg>">
+
+  <style>
+    /* ---- page-level color extensions not in style.css ---- */
+    :root {
+      --color-good: #5b7d62;
+      --color-good-soft: rgba(91,125,98,0.13);
+      --color-bad: #a8503c;
+      --color-bad-soft: rgba(168,80,60,0.13);
+      --color-localtime: #5b7d96;
+    }
+    [data-theme="dark"] {
+      --color-good: #7fae84;
+      --color-good-soft: rgba(127,174,132,0.13);
+      --color-bad: #d4795f;
+      --color-bad-soft: rgba(212,121,95,0.13);
+      --color-localtime: #8db4cc;
+    }
+
+    /* ---- clock bar ---- */
+    .ob-clock-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xl);
+      flex-wrap: wrap;
+      margin-top: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--color-text-soft);
+    }
+    .ob-clock-bar .accent { color: var(--color-accent); font-weight: 500; }
+    .ob-clock-bar select {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      border-radius: 3px;
+      font-size: 0.75rem;
+      padding: 2px 5px;
+      font-family: var(--font-mono);
+    }
+
+    /* ---- quicklinks ---- */
+    .ob-quicklinks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--space-lg); }
+    .ob-quicklinks a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+      color: var(--color-accent);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .ob-quicklinks a:hover { border-color: var(--color-accent); background: var(--color-accent-soft); }
+
+    /* ---- internal tabs ---- */
+    .ob-tabnav {
+      display: flex;
+      gap: var(--space-xl);
+      border-bottom: 1px solid var(--color-border-light);
+      margin-top: var(--space-2xl);
+      overflow-x: auto;
+    }
+    .ob-tabnav button {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      padding: 12px 0;
+      font-size: 0.88rem;
+      font-weight: 400;
+      white-space: nowrap;
+      position: relative;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      font-family: var(--font-body);
+    }
+    .ob-tabnav button::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; left: 0;
+      width: 0; height: 1px;
+      background: var(--color-accent);
+      transition: width 0.25s ease;
+    }
+    .ob-tabnav button:hover { color: var(--color-text); }
+    .ob-tabnav button.active { color: var(--color-text); }
+    .ob-tabnav button.active::after,
+    .ob-tabnav button:hover::after { width: 100%; }
+
+    /* ---- tab content ---- */
+    .ob-tab { display: none; padding: var(--space-2xl) 0 var(--space-3xl); }
+    .ob-tab.active { display: block; }
+
+    /* ---- section titles ---- */
+    h2.ob-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-soft);
+      font-weight: 500;
+      margin: var(--space-2xl) 0 var(--space-lg);
+    }
+    h2.ob-section-title:first-child { margin-top: 0; }
+
+    /* ---- cards ---- */
+    .ob-card {
+      background: var(--color-light);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: var(--space-lg) var(--space-xl);
+      margin-bottom: var(--space-md);
+    }
+    .ob-card h3 { margin: 0 0 var(--space-md); font-size: 1.05rem; font-weight: 500; }
+    .hint { color: var(--color-text-soft); font-size: 0.82rem; margin: var(--space-sm) 0 0; line-height: 1.55; }
+
+    /* ---- form rows ---- */
+    .ob-row { display: flex; gap: var(--space-md); flex-wrap: wrap; align-items: flex-end; }
+    .ob-field { display: flex; flex-direction: column; gap: 4px; }
+    .ob-field label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--color-text-soft);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .ob-field input, .ob-field select {
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: 3px;
+      padding: 7px 9px;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      min-width: 0;
+    }
+    .ob-field input:focus, .ob-field select:focus { outline: 1px solid var(--color-accent); }
+    textarea {
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: 3px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      width: 100%;
+      resize: vertical;
+      min-height: 84px;
+    }
+    textarea:focus { outline: 1px solid var(--color-accent); }
+
+    /* ---- buttons ---- */
+    .ob-btn {
+      background: transparent;
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      border-radius: 3px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+    .ob-btn:hover { background: var(--color-accent-soft); }
+    .ob-btn.secondary { color: var(--color-text-muted); border-color: var(--color-border); }
+    .ob-btn.secondary:hover { border-color: var(--color-text-soft); background: var(--color-light); }
+    .ob-btn.small { padding: 4px 11px; font-size: 0.75rem; }
+    .ob-btn.danger { color: var(--color-bad); border-color: var(--color-bad); }
+    .ob-btn.danger:hover { background: var(--color-bad-soft); }
+
+    /* ---- table ---- */
+    .ob-table-wrap { overflow-x: auto; }
+    .ob-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .ob-table th {
+      text-align: left;
+      font-family: var(--font-mono);
+      color: var(--color-text-soft);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .ob-table td {
+      padding: var(--space-md) var(--space-sm) var(--space-md) 0;
+      border-bottom: 1px solid var(--color-border-light);
+      vertical-align: top;
+    }
+    .ob-table tr:last-child td { border-bottom: none; }
+    .ob-mono, .ob-table td.ob-mono { font-family: var(--font-mono); }
+
+    /* ---- badges ---- */
+    .ob-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .ob-badge.good  { background: var(--color-good-soft);   color: var(--color-good); }
+    .ob-badge.bad   { background: var(--color-bad-soft);    color: var(--color-bad); }
+    .ob-badge.warn  { background: var(--color-accent-soft); color: var(--color-accent); }
+    .ob-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
+    .ob-dot.good { background: var(--color-good); }
+    .ob-dot.bad  { background: var(--color-bad); }
+    .ob-dot.warn { background: var(--color-accent); }
+
+    /* ---- deadlines ---- */
+    .feature-deadline {
+      background: linear-gradient(150deg, var(--color-twilight), var(--color-night) 75%);
+      border: 1px solid var(--color-dusk);
+      border-radius: 6px;
+      padding: var(--space-xl);
+      margin-bottom: var(--space-md);
+      color: var(--color-star);
+    }
+    .feature-deadline .fd-name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; color: #fff; }
+    .feature-deadline .fd-cat  { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-nebula); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .countdown { display: flex; gap: 24px; margin: 18px 0 8px; flex-wrap: wrap; }
+    .countdown .num { font-family: var(--font-mono); font-size: 2.4rem; font-weight: 500; color: var(--color-nebula); line-height: 1; }
+    .countdown .lbl { font-family: var(--font-mono); font-size: 0.68rem; color: var(--color-text-soft); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .countdown .seg { display: flex; flex-direction: column; align-items: center; min-width: 54px; }
+    .fd-meta { color: #c7bfae; font-size: 0.82rem; margin-top: 8px; }
+    .fd-meta a { color: var(--color-nebula); }
+    .ondeck-item, .past-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: var(--space-md) 0; border-bottom: 1px solid var(--color-border);
+      gap: 14px; flex-wrap: wrap;
+    }
+    .ondeck-item:last-child, .past-item:last-child { border-bottom: none; }
+    .od-left { display: flex; flex-direction: column; gap: 3px; }
+    .od-name { font-weight: 500; font-size: 0.95rem; }
+    .od-date { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-soft); }
+    .od-note { font-size: 0.8rem; color: var(--color-text-soft); max-width: 480px; }
+    .od-countdown { font-family: var(--font-mono); font-size: 0.95rem; color: var(--color-accent); font-weight: 500; white-space: nowrap; }
+    .localtime { color: var(--color-localtime); }
+    details { margin-top: 6px; }
+    details summary { cursor: pointer; color: var(--color-text-muted); font-size: 0.85rem; padding: 6px 0; }
+    .edit-form {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
+      background: var(--color-paper); padding: var(--space-md); border-radius: 4px; border: 1px solid var(--color-border);
+    }
+    .edit-form .full { grid-column: 1 / -1; }
+    .edit-form label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--color-text-soft); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 3px; }
+    .edit-form input, .edit-form select { width: 100%; background: var(--color-light); border: 1px solid var(--color-border); color: var(--color-text); border-radius: 3px; padding: 6px 8px; font-size: 0.82rem; font-family: var(--font-body); }
+    .row-actions { display: flex; gap: 8px; }
+
+    /* ---- always-dark instrument panels (plots/bars) ---- */
+    .plotwrap {
+      margin-top: var(--space-md);
+      background: var(--color-void);
+      border: 1px solid var(--color-twilight);
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+    svg text { font-family: var(--font-mono); }
+    .yearbar { display: flex; height: 26px; border-radius: 3px; overflow: hidden; border: 1px solid var(--color-twilight); }
+    .yearbar div { flex: 1; }
+    .monthlabels { display: flex; font-family: var(--font-mono); font-size: 0.62rem; color: var(--color-text-soft); margin-top: 6px; position: relative; height: 12px; }
+    .monthlabels span { position: absolute; transform: translateX(-50%); }
+    .ob-legend { display: flex; gap: 16px; font-size: 0.78rem; color: var(--color-text-soft); margin-top: var(--space-sm); flex-wrap: wrap; }
+    .ob-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .xray-card { background: transparent; border: none; padding: var(--space-lg) 0; border-bottom: 1px solid var(--color-border-light); }
+    .xray-card:last-child { border-bottom: none; }
+
+    /* ---- SN name autocomplete ---- */
+    .sn-lookup-wrap { margin-bottom: var(--space-md); }
+    .sn-ac-wrap { position: relative; }
+    .sn-ac-wrap input { width: 100%; max-width: 420px; }
+    .sn-ac-dropdown {
+      position: absolute;
+      top: calc(100% + 2px); left: 0;
+      min-width: 380px; max-width: 520px;
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      z-index: 200;
+      max-height: 240px;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .sn-ac-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    .sn-ac-item:last-child { border-bottom: none; }
+    .sn-ac-item:hover, .sn-ac-item:focus { background: var(--color-accent-soft); outline: none; }
+    .sn-ac-name { font-weight: 500; color: var(--color-text); white-space: nowrap; }
+    .sn-ac-meta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-text-soft); white-space: nowrap; }
+    .sn-ac-loading, .sn-ac-empty { color: var(--color-text-soft); font-size: 0.82rem; padding: 10px 12px; }
+
+    /* ---- misc ---- */
+    .ob-empty { color: var(--color-text-soft); font-size: 0.85rem; padding: var(--space-md) 0; }
+    .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .ob-footer-note {
+      color: var(--color-text-soft); font-size: 0.78rem;
+      padding: var(--space-2xl) 0 var(--space-xl);
+      border-top: 1px solid var(--color-border-light);
+      margin-top: var(--space-xl); line-height: 1.7;
+    }
+
+    @media (max-width: 700px) {
+      .twocol { grid-template-columns: 1fr; }
+      .edit-form { grid-template-columns: 1fr; }
+      .sn-ac-dropdown { min-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">Sanjana Gupta</a>
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="research.html" class="nav__link">Research</a></li>
+          <li><a href="trajectory.html" class="nav__link">Trajectory</a></li>
+          <li><a href="meanderings.html" class="nav__link">Meanderings</a></li>
+          <li><a href="glimpses.html" class="nav__link">Glimpses</a></li>
+          <li><a href="bridges.html" class="nav__link">Bridges</a></li>
+          <li><a href="connect.html" class="nav__link">Connect</a></li>
+          <li><a href="almanac.html" class="nav__link nav__link--active">Almanac</a></li>
+        </ul>
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-header__title">Observation Planner</h1>
+        <p class="page-header__subtitle">
+          Proposal deadlines, elevation &amp; visibility checks for radio and X-ray facilities, and converters.
+          <a href="almanac.html" style="color:var(--color-accent);text-decoration:none">← Almanac</a>
+        </p>
+
+        <div class="ob-clock-bar">
+          <span>UTC <span id="clk-utc">--:--:--</span></span>
+          <span>LST <span id="clk-lst" class="accent">--:--:--</span> <select id="clk-site"></select></span>
+        </div>
+
+        <div class="ob-quicklinks">
+          <a href="https://ui.adsabs.harvard.edu/" target="_blank" rel="noopener">ADS &#8599;</a>
+          <a href="https://simbad.cds.unistra.fr/simbad/" target="_blank" rel="noopener">SIMBAD &#8599;</a>
+          <a href="https://ned.ipac.caltech.edu/" target="_blank" rel="noopener">NED &#8599;</a>
+          <a href="https://www.wis-tns.org/" target="_blank" rel="noopener">TNS &#8599;</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <nav class="ob-tabnav" id="ob-tabnav">
+        <button data-tab="deadlines" class="active">Deadlines</button>
+        <button data-tab="radio">Radio observability</button>
+        <button data-tab="xray">X-ray sun visibility</button>
+        <button data-tab="convert">Converters</button>
+      </nav>
+
+      <!-- ================= DEADLINES ================= -->
+      <section class="ob-tab active" id="tab-deadlines">
+        <h2 class="ob-section-title">Next deadline</h2>
+        <div id="featured-deadline"></div>
+
+        <h2 class="ob-section-title">On deck</h2>
+        <div class="ob-card"><div id="ondeck-list"></div></div>
+
+        <details id="past-details">
+          <summary>Past deadlines</summary>
+          <div class="ob-card"><div id="past-list"></div></div>
+        </details>
+
+        <div id="owner-bar" style="display:none; margin-top:var(--space-lg);">
+          <button class="ob-btn small secondary" id="owner-exit">Exit edit mode</button>
+        </div>
+
+        <div id="owner-add-section" style="display:none;">
+          <h2 class="ob-section-title">Add / edit</h2>
+          <div class="ob-card">
+            <div class="edit-form" id="add-form">
+              <div><label>Name</label><input id="add-name" placeholder="e.g. NuSTAR Cycle 13 GI"></div>
+              <div><label>Category</label>
+                <select id="add-cat">
+                  <option value="radio">Radio</option>
+                  <option value="xray">X-ray</option>
+                  <option value="nasa">NASA / funding</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div><label>Deadline date (UTC)</label><input id="add-date" type="date"></div>
+              <div><label>Deadline time (UTC, optional)</label><input id="add-time" type="time"></div>
+              <div class="full"><label>Note</label><input id="add-note" placeholder="optional context"></div>
+              <div class="full"><label>Link (optional)</label><input id="add-url" placeholder="https://"></div>
+              <div><label>Status</label>
+                <select id="add-confirmed">
+                  <option value="true">Confirmed (sourced)</option>
+                  <option value="false">Estimated (verify)</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:flex-end;"><button class="ob-btn" id="add-submit">Add deadline</button></div>
+            </div>
+            <p class="hint">Saved locally in this browser. Clearing your browser data clears this too.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RADIO ================= -->
+      <section class="ob-tab" id="tab-radio">
+        <h2 class="ob-section-title">Telescope &amp; setup</h2>
+        <div class="ob-card">
+          <div class="ob-row">
+            <div class="ob-field">
+              <label>Facility</label>
+              <select id="r-site">
+                <option value="vla">VLA</option>
+                <option value="gmrt">GMRT</option>
+                <option value="meerkat">MeerKAT</option>
+                <option value="askap">ASKAP</option>
+                <option value="custom">Custom site</option>
+              </select>
+            </div>
+            <div class="ob-field" id="r-custom-lat-wrap" style="display:none;">
+              <label>Latitude (deg, +N)</label>
+              <input id="r-custom-lat" type="number" step="0.0001" placeholder="e.g. 40.8178">
+            </div>
+            <div class="ob-field" id="r-custom-lon-wrap" style="display:none;">
+              <label>Longitude (deg, +E)</label>
+              <input id="r-custom-lon" type="number" step="0.0001" placeholder="e.g. -121.4733">
+            </div>
+            <div class="ob-field" id="r-custom-el-wrap" style="display:none;">
+              <label>Elevation limit (deg)</label>
+              <input id="r-custom-el" type="number" step="0.5" placeholder="e.g. 15">
+            </div>
+            <div class="ob-field" id="r-config-wrap">
+              <label>VLA configuration</label>
+              <select id="r-config"><option>A</option><option>B</option><option>C</option><option selected>D</option></select>
+            </div>
+            <div class="ob-field" id="r-band-wrap">
+              <label>Band</label>
+              <select id="r-band"></select>
+            </div>
+          </div>
+          <p class="hint" id="r-site-note"></p>
+        </div>
+
+        <h2 class="ob-section-title">Targets</h2>
+        <div class="ob-card">
+          <!-- SN name lookup -->
+          <div class="sn-lookup-wrap">
+            <div class="ob-field">
+              <label>SN name lookup</label>
+              <div class="sn-ac-wrap">
+                <input type="text" id="r-sn-input" placeholder="Type SN name, e.g. 2020bvc..." autocomplete="off" spellcheck="false">
+                <div id="r-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
+              </div>
+            </div>
+            <p class="hint" id="r-sn-loading" style="display:none;">Loading supernova catalog...</p>
+            <p class="hint">Select a supernova to append its coordinates below. For other objects, enter RA/Dec directly.</p>
+          </div>
+          <div class="ob-field" style="margin-top:var(--space-sm);">
+            <label>RA / Dec, one object per line</label>
+            <textarea id="r-input" placeholder="SN2020bvc 10:23:55.5 +52:54:13
+SN2022xxf  187.70  +08.86">SN2020bvc 10:23:55.5 +52:54:13
+SN2022xxf  187.70  +08.86</textarea>
+          </div>
+          <p class="hint">Decimal degrees or sexagesimal (RA as HH:MM:SS, Dec as &plusmn;DD:MM:SS). Optional name as the first column.</p>
+          <div style="margin-top:10px;"><button class="ob-btn" id="r-run">Check observability</button></div>
+        </div>
+
+        <div id="r-results"></div>
+      </section>
+
+      <!-- ================= XRAY ================= -->
+      <section class="ob-tab" id="tab-xray">
+        <h2 class="ob-section-title">Observatory</h2>
+        <div class="ob-card">
+          <div class="ob-row">
+            <div class="ob-field">
+              <label>Mission</label>
+              <select id="x-mission">
+                <option value="chandra">Chandra</option>
+                <option value="swift">Swift (Neil Gehrels)</option>
+                <option value="nustar">NuSTAR</option>
+                <option value="xmm">XMM-Newton</option>
+              </select>
+            </div>
+          </div>
+          <p class="hint" id="x-mission-note"></p>
+        </div>
+
+        <h2 class="ob-section-title">Targets</h2>
+        <div class="ob-card">
+          <!-- SN name lookup -->
+          <div class="sn-lookup-wrap">
+            <div class="ob-field">
+              <label>SN name lookup</label>
+              <div class="sn-ac-wrap">
+                <input type="text" id="x-sn-input" placeholder="Type SN name, e.g. 2020bvc..." autocomplete="off" spellcheck="false">
+                <div id="x-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
+              </div>
+            </div>
+            <p class="hint" id="x-sn-loading" style="display:none;">Loading supernova catalog...</p>
+            <p class="hint">Select a supernova to append its coordinates below. For other objects, enter RA/Dec directly.</p>
+          </div>
+          <div class="ob-field" style="margin-top:var(--space-sm);">
+            <label>RA / Dec, one object per line</label>
+            <textarea id="x-input" placeholder="SN2020bvc 10:23:55.5 +52:54:13
+SN2022xxf  187.70  +08.86">SN2020bvc 10:23:55.5 +52:54:13
+SN2022xxf  187.70  +08.86</textarea>
+          </div>
+          <div style="margin-top:10px;"><button class="ob-btn" id="x-run">Check year-ahead visibility</button></div>
+        </div>
+
+        <div id="x-results"></div>
+      </section>
+
+      <!-- ================= CONVERT ================= -->
+      <section class="ob-tab" id="tab-convert">
+        <h2 class="ob-section-title">Coordinates</h2>
+        <div class="twocol">
+          <div class="ob-card">
+            <h3>Decimal &rarr; sexagesimal</h3>
+            <div class="ob-row">
+              <div class="ob-field"><label>RA (deg)</label><input id="c1-ra" type="number" step="any" placeholder="187.70"></div>
+              <div class="ob-field"><label>Dec (deg)</label><input id="c1-dec" type="number" step="any" placeholder="8.86"></div>
+            </div>
+            <p class="ob-mono" id="c1-out" style="margin-top:14px;font-size:.95rem;color:var(--color-accent);">–</p>
+          </div>
+          <div class="ob-card">
+            <h3>Sexagesimal &rarr; decimal</h3>
+            <div class="ob-row">
+              <div class="ob-field"><label>RA (HH:MM:SS)</label><input id="c2-ra" placeholder="12:30:48.0"></div>
+              <div class="ob-field"><label>Dec (&plusmn;DD:MM:SS)</label><input id="c2-dec" placeholder="+08:51:36"></div>
+            </div>
+            <p class="ob-mono" id="c2-out" style="margin-top:14px;font-size:.95rem;color:var(--color-accent);">–</p>
+          </div>
+        </div>
+
+        <h2 class="ob-section-title">Time</h2>
+        <div class="twocol">
+          <div class="ob-card">
+            <h3>UTC &rarr; LST</h3>
+            <div class="ob-row">
+              <div class="ob-field"><label>Date (UTC)</label><input id="c3-date" type="date"></div>
+              <div class="ob-field"><label>Time (UTC)</label><input id="c3-time" type="time" step="1"></div>
+              <div class="ob-field"><label>Site</label><select id="c3-site"></select></div>
+            </div>
+            <div style="margin-top:10px;"><button class="ob-btn small secondary" id="c3-now">Use current time</button></div>
+            <p class="ob-mono" id="c3-out" style="margin-top:14px;font-size:.95rem;color:var(--color-accent);">–</p>
+          </div>
+          <div class="ob-card">
+            <h3>Calendar &harr; JD / MJD</h3>
+            <div class="ob-row">
+              <div class="ob-field"><label>Date (UTC)</label><input id="c4-date" type="date"></div>
+              <div class="ob-field"><label>Time (UTC)</label><input id="c4-time" type="time" step="1" value="00:00:00"></div>
+            </div>
+            <button class="ob-btn small secondary" id="c4-todate" style="margin-top:10px;">Convert date &rarr; JD/MJD</button>
+            <p class="ob-mono" id="c4-out" style="margin-top:10px;font-size:.95rem;color:var(--color-accent);">–</p>
+            <div class="ob-row" style="margin-top:14px;">
+              <div class="ob-field"><label>MJD</label><input id="c4-mjd" type="number" step="any" placeholder="61130.5"></div>
+            </div>
+            <button class="ob-btn small secondary" id="c4-tojd" style="margin-top:10px;">Convert MJD &rarr; date</button>
+            <p class="ob-mono" id="c4-out2" style="margin-top:10px;font-size:.95rem;color:var(--color-accent);">–</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="ob-footer-note">
+        Elevation/declination geometry follows standard alt-az spherical astronomy. Site limits sourced from each
+        facility's observatory status documents (NRAO VLA OSS, GMRT status document, MeerKAT/SARAO specs,
+        ASKAP/RACS papers, Chandra POG, Swift Technical Handbook, NuSTAR mission paper, XMM-Newton AO
+        documentation). Solar position uses the Astronomical Almanac's low-precision formula (&plusmn;0.01&deg;).
+        Lunar position uses the Astronomical Almanac low-precision series (page D46, &plusmn;0.1&ndash;0.3&deg;),
+        verified against a published worked example. Deadlines current as of June 2026. Always verify against the
+        facility's own call for proposals before submitting.
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        &copy; 2026 Sanjana Gupta. Made with curiosity <span>&#10022;</span> and late nights.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+  (function(){
+  "use strict";
+
+  /* ---------------------------------------------------------------- */
+  /* utils                                                              */
+  /* ---------------------------------------------------------------- */
+  function degToRad(d){return d*Math.PI/180;}
+  function radToDeg(r){return r*180/Math.PI;}
+  function normDeg(x){x=x%360; if(x<0)x+=360; return x;}
+  function clamp(x,lo,hi){return Math.max(lo,Math.min(hi,x));}
+  function pad(n,w){w=w||2; n=Math.floor(n); var s=String(n); while(s.length<w)s="0"+s; return s;}
+
+  function fmtHM(hoursFloat){
+    var neg=hoursFloat<0; hoursFloat=Math.abs(hoursFloat);
+    var h=Math.floor(hoursFloat); var m=Math.round((hoursFloat-h)*60);
+    if(m===60){m=0;h+=1;} if(h>=24)h-=24;
+    return (neg?"-":"")+pad(h)+"h"+pad(m)+"m";
+  }
+  function fmtHMS(hoursFloat){
+    hoursFloat=((hoursFloat%24)+24)%24;
+    var h=Math.floor(hoursFloat); var mFloat=(hoursFloat-h)*60; var m=Math.floor(mFloat); var s=Math.round((mFloat-m)*60);
+    if(s===60){s=0;m+=1;} if(m===60){m=0;h+=1;} if(h===24)h=0;
+    return pad(h)+":"+pad(m)+":"+pad(s);
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* site + band data                                                   */
+  /* ---------------------------------------------------------------- */
+  var SITES={
+    vla:    {label:"VLA",     full:"Karl G. Jansky VLA (Socorro, NM)",          lat:34.0784, lon:-107.6184,hard:8, softMax:80,type:"vla"},
+    gmrt:   {label:"GMRT",    full:"Giant Metrewave Radio Telescope (Khodad, India)",lat:19.10,lon:74.05,   hard:17,softMax:90,type:"simple"},
+    meerkat:{label:"MeerKAT", full:"MeerKAT (Karoo, South Africa)",             lat:-30.713,lon:21.443,    hard:15,softMax:88,type:"simple"},
+    askap:  {label:"ASKAP",   full:"ASKAP (Murchison, WA, Australia)",           lat:-26.7,  lon:116.5,    hard:15,softMax:90,type:"simple"}
+  };
+  var VLA_CONFIG_FLOOR={A:8,B:8,C:25,D:40};
+  var VLA_BANDS=[
+    {key:"P", label:"P-band (~0.3 GHz)", floor:10,ceiling:85,bucket:"low"},
+    {key:"L", label:"L-band (~1.5 GHz)", floor:10,ceiling:85,bucket:"low"},
+    {key:"S", label:"S-band (~3 GHz)",   floor:20,ceiling:85,bucket:"s"},
+    {key:"C", label:"C-band (~6 GHz)",   floor:10,ceiling:85,bucket:"low"},
+    {key:"X", label:"X-band (~10 GHz)",  floor:10,ceiling:85,bucket:"low"},
+    {key:"Ku",label:"Ku-band (~15 GHz)", floor:30,ceiling:80,bucket:"high"},
+    {key:"K", label:"K-band (~22 GHz)",  floor:30,ceiling:80,bucket:"high"},
+    {key:"Ka",label:"Ka-band (~33 GHz)", floor:30,ceiling:80,bucket:"high"},
+    {key:"Q", label:"Q-band (~45 GHz)",  floor:30,ceiling:80,bucket:"high"}
+  ];
+  var CLARKE_BELT_BANDS={S:1,C:1,Ku:1,K:1,Ka:1};
+
+  var XRAY_MISSIONS={
+    chandra:{label:"Chandra",      note:"Hard Sun-avoidance limit only (cannot be overridden). Pitch angles outside roughly 65-135 degrees may need segmented observations for thermal reasons; no part of the sky is ever unobservable for more than about 3 months. Moon avoidance is not separately modeled here."},
+    swift:  {label:"Swift (Neil Gehrels)", note:"Both the Sun (>46 deg) and Moon (>23 deg) avoidance cones are modeled here. Also keeps more than ~28 degrees from the Earth limb (not modeled), and targets within ~6 degrees of the orbital pole can have long unobservable stretches."},
+    nustar: {label:"NuSTAR",       note:"Both the Sun (>39 deg) and Moon (>14 deg) avoidance cones are modeled here. NuSTAR can point closer to the Sun than this in special circumstances, at the cost of pointing accuracy."},
+    xmm:    {label:"XMM-Newton",   note:"Solar-panel power requires the Sun-target angle to stay within a narrow band (not a simple avoidance cone); most targets are only visible for a couple of months per year. Moon avoidance is not separately modeled here."}
+  };
+
+  /* ---------------------------------------------------------------- */
+  /* astronomy core                                                     */
+  /* ---------------------------------------------------------------- */
+  function julianDate(date){return date.getTime()/86400000+2440587.5;}
+
+  function gmstHours(date){
+    var jd=julianDate(date); var T=(jd-2451545.0)/36525.0;
+    var gmstDeg=280.46061837+360.98564736629*(jd-2451545.0)+0.000387933*T*T-(T*T*T)/38710000.0;
+    return normDeg(gmstDeg)/15.0;
+  }
+  function lstHours(date,lonEastDeg){
+    var lst=gmstHours(date)+lonEastDeg/15.0; return((lst%24)+24)%24;
+  }
+
+  function sunRADec(date){
+    var jd=julianDate(date); var n=jd-2451545.0;
+    var L=normDeg(280.460+0.9856474*n); var g=normDeg(357.528+0.9856003*n); var gr=degToRad(g);
+    var lambda=normDeg(L+1.915*Math.sin(gr)+0.020*Math.sin(2*gr));
+    var epsilon=23.439-0.0000004*n;
+    var lr=degToRad(lambda),er=degToRad(epsilon);
+    var raRad=Math.atan2(Math.cos(er)*Math.sin(lr),Math.cos(lr));
+    return{ra:normDeg(radToDeg(raRad)),dec:radToDeg(Math.asin(Math.sin(er)*Math.sin(lr)))};
+  }
+
+  function moonRADec(date){
+    var jd=julianDate(date); var n=jd-2451545.0; var t=n/36525.0;
+    var l=218.32+481267.883*t;
+    l+=6.29*Math.sin(degToRad(134.9+477198.85*t));
+    l-=1.27*Math.sin(degToRad(259.2-413335.38*t));
+    l+=0.66*Math.sin(degToRad(235.7+890534.23*t));
+    l+=0.21*Math.sin(degToRad(269.9+954397.7*t));
+    l-=0.19*Math.sin(degToRad(357.5+35999.05*t));
+    l-=0.11*Math.sin(degToRad(186.6+966404.05*t));
+    l=normDeg(l);
+    var bm=5.13*Math.sin(degToRad(93.3+483202.03*t));
+    bm+=0.28*Math.sin(degToRad(228.2+960400.87*t));
+    bm-=0.28*Math.sin(degToRad(318.3+6003.18*t));
+    bm-=0.17*Math.sin(degToRad(217.6-407332.2*t));
+    var ecl=23.4393-3.563e-7*n;
+    var lr=degToRad(l),br=degToRad(bm),er=degToRad(ecl);
+    var xg=Math.cos(lr)*Math.cos(br),yg=Math.sin(lr)*Math.cos(br),zg=Math.sin(br);
+    var ye=yg*Math.cos(er)-zg*Math.sin(er),ze=yg*Math.sin(er)+zg*Math.cos(er);
+    return{ra:normDeg(radToDeg(Math.atan2(ye,xg))),dec:radToDeg(Math.asin(clamp(ze,-1,1)))};
+  }
+
+  function angularSepDeg(ra1,dec1,ra2,dec2){
+    var r1=degToRad(ra1),d1=degToRad(dec1),r2=degToRad(ra2),d2=degToRad(dec2);
+    var c=clamp(Math.sin(d1)*Math.sin(d2)+Math.cos(d1)*Math.cos(d2)*Math.cos(r1-r2),-1,1);
+    return radToDeg(Math.acos(c));
+  }
+
+  function elevationAtHA(latDeg,decDeg,haDeg){
+    var lr=degToRad(latDeg),dr=degToRad(decDeg),hr=degToRad(haDeg);
+    return radToDeg(Math.asin(clamp(Math.sin(lr)*Math.sin(dr)+Math.cos(lr)*Math.cos(dr)*Math.cos(hr),-1,1)));
+  }
+
+  function haAtElevation(latDeg,decDeg,elLimitDeg){
+    var lr=degToRad(latDeg),dr=degToRad(decDeg),sinEl=Math.sin(degToRad(elLimitDeg));
+    var denom=Math.cos(lr)*Math.cos(dr);
+    if(Math.abs(denom)<1e-9)return null;
+    var cosHA=(sinEl-Math.sin(lr)*Math.sin(dr))/denom;
+    if(cosHA>1)return 0; if(cosHA<-1)return 180;
+    return radToDeg(Math.acos(clamp(cosHA,-1,1)));
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* RA/Dec parsing and formatting                                       */
+  /* ---------------------------------------------------------------- */
+  function parseRAToken(tok){
+    tok=tok.trim();
+    if(tok.indexOf(":")>=0){var p=tok.split(":").map(Number);return(p[0]+(p[1]||0)/60+(p[2]||0)/3600)*15;}
+    return parseFloat(tok);
+  }
+  function parseDecToken(tok){
+    tok=tok.trim();
+    if(tok.indexOf(":")>=0){
+      var sign=tok.charAt(0)==="-"?-1:1; var clean=tok.replace(/^[+-]/,"");
+      var p=clean.split(":").map(Number); return sign*(p[0]+(p[1]||0)/60+(p[2]||0)/3600);
+    }
+    return parseFloat(tok);
+  }
+  function parseTargetLines(text){
+    var lines=text.split("\n").map(function(l){return l.trim();}).filter(Boolean);
+    var out=[];
+    lines.forEach(function(line,i){
+      var tokens=line.split(/[\s,]+/).filter(Boolean);
+      var name,raTok,decTok;
+      if(tokens.length>=3){name=tokens[0];raTok=tokens[1];decTok=tokens[2];}
+      else if(tokens.length===2){name="Obj "+(i+1);raTok=tokens[0];decTok=tokens[1];}
+      else{out.push({name:line,error:"Could not parse this line (need RA and Dec)."});return;}
+      var ra=parseRAToken(raTok),dec=parseDecToken(decTok);
+      if(isNaN(ra)||isNaN(dec)){out.push({name:name,error:"Could not parse RA/Dec."});return;}
+      out.push({name:name,ra:normDeg(ra),dec:dec});
+    });
+    return out;
+  }
+  function raToSex(raDeg){
+    raDeg=normDeg(raDeg); var hFloat=raDeg/15;
+    var h=Math.floor(hFloat),mFloat=(hFloat-h)*60,m=Math.floor(mFloat),s=(mFloat-m)*60;
+    s=Math.round(s*100)/100;
+    if(s>=60){s-=60;m+=1;} if(m>=60){m-=60;h+=1;} if(h>=24)h-=24;
+    return pad(h)+":"+pad(m)+":"+s.toFixed(2).padStart(5,"0");
+  }
+  function decToSex(decDeg){
+    var sign=decDeg<0?"-":"+"; var a=Math.abs(decDeg);
+    var d=Math.floor(a),mFloat=(a-d)*60,m=Math.floor(mFloat),s=(mFloat-m)*60;
+    s=Math.round(s*100)/100;
+    if(s>=60){s-=60;m+=1;} if(m>=60){m-=60;d+=1;}
+    return sign+pad(d)+":"+pad(m)+":"+s.toFixed(2).padStart(5,"0");
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* live clock                                                          */
+  /* ---------------------------------------------------------------- */
+  function fillSiteSelect(sel){
+    sel.innerHTML="";
+    Object.keys(SITES).forEach(function(k){
+      var o=document.createElement("option"); o.value=k; o.textContent=SITES[k].label; sel.appendChild(o);
+    });
+  }
+  var clkSite=document.getElementById("clk-site");
+  fillSiteSelect(clkSite); clkSite.value="vla";
+  var c3Site=document.getElementById("c3-site");
+  fillSiteSelect(c3Site); c3Site.value="vla";
+
+  function tickClock(){
+    var now=new Date();
+    document.getElementById("clk-utc").textContent=pad(now.getUTCHours())+":"+pad(now.getUTCMinutes())+":"+pad(now.getUTCSeconds());
+    var site=SITES[clkSite.value]||SITES.vla;
+    document.getElementById("clk-lst").textContent=fmtHMS(lstHours(now,site.lon));
+  }
+  setInterval(tickClock,1000); tickClock();
+  clkSite.addEventListener("change",tickClock);
+
+  /* ---------------------------------------------------------------- */
+  /* owner mode                                                          */
+  /* ---------------------------------------------------------------- */
+  var OWNER_KEY="sg-obsplanner-owner";
+  function computeOwnerMode(){
+    try{
+      var params=new URLSearchParams(window.location.search);
+      if(params.get("owner")==="1"){
+        localStorage.setItem(OWNER_KEY,"1");
+        var url=new URL(window.location.href); url.searchParams.delete("owner");
+        window.history.replaceState({},"",url.toString());
+      }
+      return localStorage.getItem(OWNER_KEY)==="1";
+    }catch(e){return false;}
+  }
+  var OWNER_MODE=computeOwnerMode();
+  (function initOwnerBar(){
+    var addSection=document.getElementById("owner-add-section");
+    var ownerBar=document.getElementById("owner-bar");
+    if(OWNER_MODE){if(addSection)addSection.style.display=""; if(ownerBar)ownerBar.style.display="";}
+    var exitBtn=document.getElementById("owner-exit");
+    if(exitBtn){exitBtn.addEventListener("click",function(){try{localStorage.removeItem(OWNER_KEY);}catch(e){} window.location.reload();});}
+  })();
+
+  /* ---------------------------------------------------------------- */
+  /* internal tabs                                                       */
+  /* ---------------------------------------------------------------- */
+  document.getElementById("ob-tabnav").addEventListener("click",function(e){
+    var btn=e.target.closest("button[data-tab]");
+    if(!btn)return;
+    document.querySelectorAll(".ob-tabnav button").forEach(function(b){b.classList.remove("active");});
+    document.querySelectorAll(".ob-tab").forEach(function(s){s.classList.remove("active");});
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+  });
+
+  /* ================================================================ */
+  /* DEADLINES                                                          */
+  /* ================================================================ */
+  var DEADLINES_KEY="sg-obsplanner-deadlines-v1";
+  var deadlines=[];
+
+  function defaultDeadlines(){
+    return[
+      {id:"gmrt51",name:"GMRT Cycle 51 (October 2026 – March 2027)",category:"radio",
+        date:"2026-07-15T11:30:00Z",confirmed:true,
+        note:"Official AO: deadline is 17:00 IST (UTC+5:30), Wed 15 Jul 2026, equivalent to 11:30 UTC.",
+        url:"https://www.ncra.tifr.res.in/~secr-ops/sch/c51webfiles/gtac_51_announcement.pdf"},
+      {id:"meerkat26",name:"MeerKAT 2026 Call (observing ~Nov 2026 – Nov 2027)",category:"radio",
+        date:"2026-07-15T12:00:00Z",confirmed:true,
+        note:"Deadline sourced from SARAO's 2026 Call (12:00 UTC / 14:00 SAST).",
+        url:"https://skaafrica.atlassian.net/wiki/spaces/ESDKB/overview"},
+      {id:"nrao2027a",name:"NRAO Semester 2027A, VLA/GBT/VLBA (Feb – Jul 2027)",category:"radio",
+        date:"2026-07-29T21:00:00Z",confirmed:true,
+        note:"Sourced from the NRAO call-for-proposals page (17:00 EDT).",
+        url:"https://science.nrao.edu/observing/call-for-proposals"},
+      {id:"swift23",name:"Swift Cycle 23 GO (~Apr 2027 – Mar 2028)",category:"xray",
+        date:"2026-09-11T20:30:00Z",confirmed:false,
+        note:"Estimated: Cycle 22 deadline was 11 Sept 2025, 4:30pm EDT. Watch the Swift GI page for the official Cycle 23 date.",
+        url:"https://swift.gsfc.nasa.gov/proposals/swiftgi.html"},
+      {id:"xmmao26",name:"XMM-Newton AO-26 (~May 2027 – Apr 2028)",category:"xray",
+        date:"2026-10-10T12:00:00Z",confirmed:false,
+        note:"Estimated: AO-25 deadline was 10 Oct 2025. Watch the XMM-Newton AO page for the official date.",
+        url:"https://www.cosmos.esa.int/web/xmm-newton/"},
+      {id:"atnf2027apr",name:"ATNF 2027APR semester incl. ASKAP (Apr – Sep 2027)",category:"radio",
+        date:"2026-12-15T07:00:00Z",confirmed:false,
+        note:"Estimated: ATNF deadlines fall ~mid-June and ~mid-December.",
+        url:"https://www.atnf.csiro.au/facilities/apply-for-time/telescope-status/"},
+      {id:"nustar13",name:"NuSTAR Cycle 13 GI (~Jun 2027 – May 2028)",category:"xray",
+        date:"2027-01-29T21:30:00Z",confirmed:false,
+        note:"Estimated: Cycle 12 deadline was 29 Jan 2026. Watch the NuSTAR proposer page for the official date.",
+        url:"https://www.nustar.caltech.edu/page/for_proposers"},
+      {id:"chandra29",name:"Chandra Cycle 29, Stage 1 (~Jan – Dec 2028)",category:"xray",
+        date:"2027-03-17T22:00:00Z",confirmed:false,
+        note:"Estimated: Cycle 28 deadline was 18 Mar 2026, 6pm EDT. Watch the CXC proposer page for the official date.",
+        url:"https://cxc.harvard.edu/proposer/"}
+    ];
+  }
+
+  function saveDeadlines(){try{localStorage.setItem(DEADLINES_KEY,JSON.stringify(deadlines));}catch(e){}}
+  function loadDeadlines(){
+    try{var raw=localStorage.getItem(DEADLINES_KEY); if(raw){deadlines=JSON.parse(raw);}else{deadlines=defaultDeadlines();saveDeadlines();}}
+    catch(e){deadlines=defaultDeadlines();saveDeadlines();}
+  }
+
+  var CAT_LABEL={radio:"Radio",xray:"X-ray",nasa:"NASA / funding",other:"Other"};
+
+  function fmtDaysHours(diffMs){
+    var totalMinutes=Math.floor(diffMs/60000);
+    return{days:Math.floor(totalMinutes/1440),hours:Math.floor((totalMinutes%1440)/60),minutes:totalMinutes%60};
+  }
+  function fmtLocal(date){
+    try{return date.toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"});}catch(e){return"";}
+  }
+
+  function renderDeadlines(){
+    var now=new Date();
+    var withDate=deadlines.map(function(d){d._dt=new Date(d.date);return d;});
+    var upcoming=withDate.filter(function(d){return d._dt>now;}).sort(function(a,b){return a._dt-b._dt;});
+    var past=withDate.filter(function(d){return d._dt<=now;}).sort(function(a,b){return b._dt-a._dt;});
+
+    var featuredDiv=document.getElementById("featured-deadline");
+    if(upcoming.length===0){
+      featuredDiv.innerHTML='<div class="ob-empty">No upcoming deadlines stored. Add one below.</div>';
+    }else{
+      var f=upcoming[0]; var dh=fmtDaysHours(f._dt-now);
+      featuredDiv.innerHTML=
+        '<div class="feature-deadline">'+
+          '<div class="fd-cat">'+CAT_LABEL[f.category]+'</div>'+
+          '<div class="fd-name">'+escapeHtml(f.name)+'</div>'+
+          '<div class="countdown">'+
+            '<div class="seg"><div class="num">'+dh.days+'</div><div class="lbl">days</div></div>'+
+            '<div class="seg"><div class="num">'+dh.hours+'</div><div class="lbl">hours</div></div>'+
+            '<div class="seg"><div class="num">'+dh.minutes+'</div><div class="lbl">min</div></div>'+
+          '</div>'+
+          '<div class="fd-meta">Due '+f._dt.toUTCString().replace(" GMT"," UTC")+' &nbsp; <span class="localtime">your time: '+fmtLocal(f._dt)+'</span></div>'+
+          (f.note?'<div class="fd-meta">'+escapeHtml(f.note)+'</div>':'')+
+          (f.url?'<div class="fd-meta"><a href="'+escapeHtml(f.url)+'" target="_blank" rel="noopener">Source / call for proposals →</a></div>':'')+
+        '</div>';
+    }
+
+    var ondeckDiv=document.getElementById("ondeck-list");
+    var rest=upcoming.slice(1);
+    ondeckDiv.innerHTML=rest.length===0
+      ?'<div class="ob-empty">Nothing else upcoming in storage.</div>'
+      :rest.map(function(d){return ondeckRowHtml(d,false,now);}).join("");
+
+    var pastDiv=document.getElementById("past-list");
+    pastDiv.innerHTML=past.length===0
+      ?'<div class="ob-empty">No past deadlines stored.</div>'
+      :past.map(function(d){return ondeckRowHtml(d,true,now);}).join("");
+
+    attachRowHandlers();
+  }
+
+  function ondeckRowHtml(d,isPast,now){
+    var countdownHtml="";
+    if(!isPast){var dh=fmtDaysHours(d._dt-now); countdownHtml='<div class="od-countdown ob-mono">'+dh.days+'d '+dh.hours+'h '+dh.minutes+'m</div>';}
+    var actionsHtml=OWNER_MODE?
+      '<div class="row-actions"><button class="ob-btn small secondary edit-btn" data-id="'+d.id+'">Edit</button></div>'+
+      '<div class="edit-target" data-id="'+d.id+'"></div>':"";
+    return '<div class="ondeck-item" data-id="'+d.id+'">'+
+      '<div class="od-left">'+
+        '<div class="od-name">'+escapeHtml(d.name)+'</div>'+
+        '<div class="od-date">'+CAT_LABEL[d.category]+' &middot; '+d._dt.toUTCString().replace(" GMT"," UTC")+' &middot; <span class="localtime">your time: '+fmtLocal(d._dt)+'</span></div>'+
+        (d.note?'<div class="od-note">'+escapeHtml(d.note)+'</div>':'')+
+      '</div>'+countdownHtml+actionsHtml+'</div>';
+  }
+
+  function attachRowHandlers(){
+    document.querySelectorAll(".edit-btn").forEach(function(btn){
+      btn.onclick=function(){
+        var id=btn.dataset.id; var d=deadlines.find(function(x){return x.id===id;});
+        var target=document.querySelector('.edit-target[data-id="'+id+'"]');
+        if(!d||!target)return;
+        if(target.innerHTML){target.innerHTML="";return;}
+        var dt=new Date(d.date);
+        target.innerHTML=
+          '<div class="edit-form">'+
+            '<div><label>Name</label><input class="ef-name" value="'+escapeHtml(d.name)+'"></div>'+
+            '<div><label>Category</label><select class="ef-cat">'+
+              Object.keys(CAT_LABEL).map(function(k){return'<option value="'+k+'"'+(k===d.category?" selected":"")+'>'+CAT_LABEL[k]+'</option>';}).join("")+
+            '</select></div>'+
+            '<div><label>Date (UTC)</label><input class="ef-date" type="date" value="'+dt.toISOString().slice(0,10)+'"></div>'+
+            '<div><label>Time (UTC)</label><input class="ef-time" type="time" step="1" value="'+dt.toISOString().slice(11,19)+'"></div>'+
+            '<div class="full"><label>Note</label><input class="ef-note" value="'+escapeHtml(d.note||"")+'"></div>'+
+            '<div class="full"><label>Link</label><input class="ef-url" value="'+escapeHtml(d.url||"")+'"></div>'+
+            '<div><label>Status</label><select class="ef-confirmed"><option value="true"'+(d.confirmed?" selected":"")+'>Confirmed</option><option value="false"'+(!d.confirmed?" selected":"")+'>Estimated</option></select></div>'+
+            '<div style="display:flex;align-items:flex-end;"><button class="ob-btn small ef-save">Save</button></div>'+
+          '</div>';
+        target.querySelector(".ef-save").onclick=function(){
+          d.name=target.querySelector(".ef-name").value||d.name;
+          d.category=target.querySelector(".ef-cat").value;
+          d.note=target.querySelector(".ef-note").value;
+          d.url=target.querySelector(".ef-url").value;
+          d.confirmed=target.querySelector(".ef-confirmed").value==="true";
+          var nd=target.querySelector(".ef-date").value,nt=target.querySelector(".ef-time").value||"00:00:00";
+          if(nd)d.date=nd+"T"+(nt.length===5?nt+":00":nt)+"Z";
+          saveDeadlines(); renderDeadlines();
+        };
+      };
+    });
+  }
+
+  document.getElementById("add-submit").addEventListener("click",function(){
+    var name=document.getElementById("add-name").value.trim();
+    var dateVal=document.getElementById("add-date").value;
+    if(!name||!dateVal){alert("Name and date are required.");return;}
+    var timeVal=document.getElementById("add-time").value||"00:00:00";
+    if(timeVal.length===5)timeVal+=":00";
+    var d={id:"d"+Date.now(),name:name,category:document.getElementById("add-cat").value,
+      date:dateVal+"T"+timeVal+"Z",confirmed:document.getElementById("add-confirmed").value==="true",
+      note:document.getElementById("add-note").value.trim(),url:document.getElementById("add-url").value.trim()};
+    deadlines.push(d);
+    saveDeadlines(); renderDeadlines();
+    ["add-name","add-date","add-time","add-note","add-url"].forEach(function(id){document.getElementById(id).value="";});
+  });
+
+  setInterval(function(){if(document.getElementById("tab-deadlines").classList.contains("active"))renderDeadlines();},60000);
+
+  /* ================================================================ */
+  /* RADIO OBSERVABILITY                                                */
+  /* ================================================================ */
+  var rBandSel=document.getElementById("r-band");
+  VLA_BANDS.forEach(function(b){var o=document.createElement("option");o.value=b.key;o.textContent=b.label;rBandSel.appendChild(o);});
+  rBandSel.value="L";
+
+  var rSiteSel=document.getElementById("r-site");
+  function updateRadioUI(){
+    var site=rSiteSel.value;
+    document.getElementById("r-config-wrap").style.display=site==="vla"?"":"none";
+    document.getElementById("r-band-wrap").style.display=site==="vla"?"":"none";
+    var isCustom=site==="custom";
+    ["r-custom-lat-wrap","r-custom-lon-wrap","r-custom-el-wrap"].forEach(function(id){
+      document.getElementById(id).style.display=isCustom?"":"none";
+    });
+    var note=document.getElementById("r-site-note");
+    if(site==="vla")note.textContent="Hard mechanical elevation limit: 8°. Recommended floor depends on configuration and band; see results.";
+    else if(site==="custom")note.textContent="This method works for any alt-az radio telescope; enter the site's published hard elevation limit.";
+    else if(SITES[site])note.textContent=SITES[site].full+": hard elevation limit "+SITES[site].hard+"°.";
+  }
+  rSiteSel.addEventListener("change",updateRadioUI);
+  updateRadioUI();
+
+  function getRadioSiteConfig(){
+    var key=rSiteSel.value;
+    if(key==="custom"){
+      var lat=parseFloat(document.getElementById("r-custom-lat").value);
+      var lon=parseFloat(document.getElementById("r-custom-lon").value);
+      var el=parseFloat(document.getElementById("r-custom-el").value);
+      if(isNaN(lat)||isNaN(lon)||isNaN(el))return null;
+      return{label:"Custom site",full:"Custom site ("+lat+", "+lon+")",lat:lat,lon:lon,hard:el,type:"simple"};
+    }
+    return SITES[key];
+  }
+
+  var PLOT_VOID="#0a0f1a",PLOT_TWILIGHT="#1a2744",PLOT_DUSK="#2a3f5f",
+      PLOT_STAR="#e8d5b7",PLOT_BAD="#d4795f",PLOT_ACCENT="#d4a017",PLOT_GOOD="#7fae84",PLOT_NEBULA="#c9a87c";
+
+  function buildElevationSVG(latDeg,decDeg,hardLimit,recLimit){
+    var W=620,H=210,padL=42,padR=14,padT=14,padB=28;
+    var plotW=W-padL-padR,plotH=H-padT-padB;
+    var yMin=-15,yMax=90;
+    function xOf(ha){return padL+(ha+180)/360*plotW;}
+    function yOf(el){return padT+(yMax-clamp(el,yMin,yMax))/(yMax-yMin)*plotH;}
+    var pts=[];
+    for(var ha=-180;ha<=180;ha+=4)pts.push(xOf(ha).toFixed(1)+","+yOf(elevationAtHA(latDeg,decDeg,ha)).toFixed(1));
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:620px;display:block;">';
+    svg+='<line x1="'+padL+'" y1="'+padT+'" x2="'+padL+'" y2="'+(H-padB)+'" stroke="'+PLOT_DUSK+'" stroke-width="1"/>';
+    svg+='<line x1="'+padL+'" y1="'+(H-padB)+'" x2="'+(W-padR)+'" y2="'+(H-padB)+'" stroke="'+PLOT_DUSK+'" stroke-width="1"/>';
+    [0,30,60,90].forEach(function(e){
+      var y=yOf(e);
+      svg+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="'+PLOT_TWILIGHT+'" stroke-width="1"/>';
+      svg+='<text x="'+(padL-8)+'" y="'+(y+3)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+e+'</text>';
+    });
+    [-180,-90,0,90,180].forEach(function(ha){
+      var x=xOf(ha);
+      svg+='<text x="'+x+'" y="'+(H-padB+14)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(ha/15).toFixed(0)+'h</text>';
+    });
+    svg+='<text x="'+(W/2)+'" y="'+(H-2)+'" fill="#6b7a99" font-size="9" text-anchor="middle">hour angle from transit</text>';
+    var topLimit=Math.max(hardLimit,recLimit||0);
+    svg+='<rect x="'+padL+'" y="'+yOf(topLimit)+'" width="'+plotW+'" height="'+(yOf(yMin)-yOf(topLimit))+'" fill="'+PLOT_BAD+'" opacity="0.10"/>';
+    svg+='<line x1="'+padL+'" y1="'+yOf(hardLimit)+'" x2="'+(W-padR)+'" y2="'+yOf(hardLimit)+'" stroke="'+PLOT_BAD+'" stroke-width="1.3" stroke-dasharray="5,4"/>';
+    if(recLimit&&recLimit!==hardLimit)
+      svg+='<line x1="'+padL+'" y1="'+yOf(recLimit)+'" x2="'+(W-padR)+'" y2="'+yOf(recLimit)+'" stroke="'+PLOT_ACCENT+'" stroke-width="1.3" stroke-dasharray="2,3"/>';
+    svg+='<path d="M'+pts.join(" L")+'" fill="none" stroke="'+PLOT_STAR+'" stroke-width="2"/>';
+    svg+='</svg>';
+    return svg;
+  }
+
+  function renderRadioResults(targets,site,configFloor,bandInfo){
+    var container=document.getElementById("r-results");
+    if(targets.length===0){container.innerHTML="";return;}
+    var isVLA=site.type==="vla";
+    var recFloor=isVLA?Math.max(configFloor,bandInfo.floor):null;
+    var rows=['<h2 class="ob-section-title">Results for '+escapeHtml(site.full)+'</h2>'+
+      '<div class="ob-card"><div class="ob-table-wrap"><table class="ob-table"><thead><tr>'+
+      '<th>Object</th><th>RA</th><th>Dec</th><th>Max elev.</th><th>Floor used</th><th>Hrs/day above floor</th><th>LST window</th><th>Flags</th><th></th>'+
+      '</tr></thead><tbody>'];
+
+    targets.forEach(function(t,idx){
+      if(t.error){rows.push('<tr><td>'+escapeHtml(t.name)+'</td><td colspan="8" style="color:var(--color-bad)">'+escapeHtml(t.error)+'</td></tr>');return;}
+      var maxEl=90-Math.abs(site.lat-t.dec);
+      var floor=isVLA?recFloor:site.hard;
+      var flags=[];
+      var rowId="rrow"+idx;
+
+      if(maxEl<=floor){
+        rows.push('<tr><td>'+escapeHtml(t.name)+'</td><td class="ob-mono">'+raToSex(t.ra)+'</td><td class="ob-mono">'+decToSex(t.dec)+'</td>'+
+          '<td class="ob-mono">'+maxEl.toFixed(1)+'&deg;</td><td class="ob-mono">'+floor+'&deg;</td>'+
+          '<td><span class="ob-badge bad">never rises</span></td><td>&ndash;</td><td>&ndash;</td><td></td></tr>');
+        return;
+      }
+      var haMaxDeg=haAtElevation(site.lat,t.dec,floor);
+      var hrsPerDay=(haMaxDeg/15)*2;
+      var raHours=t.ra/15;
+      var lstStart=((raHours-haMaxDeg/15)%24+24)%24;
+      var lstEnd=((raHours+haMaxDeg/15)%24+24)%24;
+
+      if(isVLA&&t.dec>=-15&&t.dec<=5&&CLARKE_BELT_BANDS[bandInfo.key])
+        flags.push('<span class="ob-badge warn">Clarke-belt RFI risk</span>');
+      if(isVLA&&bandInfo.ceiling&&maxEl>bandInfo.ceiling)
+        flags.push('<span class="ob-badge warn">near-zenith tracking caution (&gt;'+bandInfo.ceiling+'&deg;)</span>');
+
+      rows.push(
+        '<tr>'+
+        '<td>'+escapeHtml(t.name)+'</td>'+
+        '<td class="ob-mono">'+raToSex(t.ra)+'</td>'+
+        '<td class="ob-mono">'+decToSex(t.dec)+'</td>'+
+        '<td class="ob-mono">'+maxEl.toFixed(1)+'&deg;</td>'+
+        '<td class="ob-mono">'+floor+'&deg;'+(isVLA?'<div class="hint" style="margin-top:2px;">hard min '+site.hard+'&deg;</div>':'')+'</td>'+
+        '<td class="ob-mono">'+hrsPerDay.toFixed(1)+' h</td>'+
+        '<td class="ob-mono">'+fmtHM(lstStart)+'&ndash;'+fmtHM(lstEnd)+'</td>'+
+        '<td>'+(flags.length?flags.join(" "):'<span class="ob-badge good">clear</span>')+'</td>'+
+        '<td><button class="ob-btn small secondary plot-btn" data-row="'+rowId+'">Plot</button></td>'+
+        '</tr>'+
+        '<tr id="'+rowId+'" style="display:none;"><td colspan="9">'+
+          '<div class="plotwrap">'+
+            buildElevationSVG(site.lat,t.dec,site.hard,isVLA?recFloor:null)+
+            '<div class="ob-legend">'+
+              '<span><span class="ob-dot" style="background:'+PLOT_STAR+'"></span>elevation vs hour angle</span>'+
+              '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>hard limit ('+site.hard+'&deg;)</span>'+
+              (isVLA&&recFloor!==site.hard?'<span><span class="ob-dot" style="background:'+PLOT_ACCENT+'"></span>recommended floor ('+recFloor+'&deg;)</span>':'')+
+            '</div>'+
+          '</div>'+
+        '</td></tr>'
+      );
+    });
+
+    rows.push('</tbody></table></div></div>');
+    container.innerHTML=rows.join("");
+    container.querySelectorAll(".plot-btn").forEach(function(btn){
+      btn.onclick=function(){var row=document.getElementById(btn.dataset.row);row.style.display=row.style.display==="none"?"":"none";};
+    });
+  }
+
+  document.getElementById("r-run").addEventListener("click",function(){
+    var site=getRadioSiteConfig();
+    if(!site){alert("Enter latitude, longitude, and elevation limit for the custom site.");return;}
+    var targets=parseTargetLines(document.getElementById("r-input").value);
+    var configFloor=VLA_CONFIG_FLOOR[document.getElementById("r-config").value]||8;
+    var bandInfo=VLA_BANDS.find(function(b){return b.key===rBandSel.value;})||VLA_BANDS[1];
+    renderRadioResults(targets,site,configFloor,bandInfo);
+  });
+
+  /* ================================================================ */
+  /* X-RAY SUN-ANGLE VISIBILITY                                         */
+  /* ================================================================ */
+  var xMissionSel=document.getElementById("x-mission");
+  function updateXrayNote(){document.getElementById("x-mission-note").textContent=XRAY_MISSIONS[xMissionSel.value].note;}
+  xMissionSel.addEventListener("change",updateXrayNote); updateXrayNote();
+
+  function statusForMission(mission,sunSep,moonSep){
+    if(mission==="chandra"){if(sunSep<=46.2)return"blocked"; if(sunSep>=65&&sunSep<=135)return"preferred"; return"ok";}
+    if(mission==="swift"){return(sunSep<=46||moonSep<=23)?"blocked":"ok";}
+    if(mission==="nustar"){return(sunSep<=39||moonSep<=14)?"blocked":"ok";}
+    if(mission==="xmm"){return(sunSep>=70&&sunSep<=110)?"ok":"blocked";}
+    return"ok";
+  }
+  var STATUS_COLOR={blocked:PLOT_BAD,ok:PLOT_GOOD,preferred:PLOT_NEBULA};
+  var STATUS_LABEL={blocked:"blocked",ok:"observable",preferred:"observable (preferred pitch)"};
+
+  function monthLabels(year0){
+    var names=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],out=[];
+    for(var i=0;i<12;i++){
+      var frac=i/12*100;
+      out.push('<span style="left:'+frac.toFixed(2)+'%;">'+names[new Date(Date.UTC(year0.getUTCFullYear(),year0.getUTCMonth()+i,year0.getUTCDate())).getUTCMonth()]+'</span>');
+    }
+    return out.join("");
+  }
+
+  function renderXrayResults(targets,mission){
+    var container=document.getElementById("x-results");
+    if(targets.length===0){container.innerHTML="";return;}
+    var today=new Date();
+    var day0=new Date(Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),today.getUTCDate()));
+    var html='<h2 class="ob-section-title">Results for '+XRAY_MISSIONS[mission].label+'</h2>';
+
+    targets.forEach(function(t){
+      if(t.error){html+='<div class="xray-card"><strong>'+escapeHtml(t.name)+'</strong><div style="color:var(--color-bad)">'+escapeHtml(t.error)+'</div></div>';return;}
+      var statuses=[];
+      for(var i=0;i<365;i++){
+        var d=new Date(day0.getTime()+i*86400000);
+        var sun=sunRADec(d),moon=moonRADec(d);
+        statuses.push(statusForMission(mission,angularSepDeg(sun.ra,sun.dec,t.ra,t.dec),angularSepDeg(moon.ra,moon.dec,t.ra,t.dec)));
+      }
+      var counts={blocked:0,ok:0,preferred:0};
+      statuses.forEach(function(s){counts[s]=(counts[s]||0)+1;});
+      var bar=statuses.map(function(s){return'<div style="background:'+STATUS_COLOR[s]+';"></div>';}).join("");
+      var todayStatus=statuses[0];
+      var transitionIdx=-1;
+      for(var j=1;j<statuses.length;j++){if(statuses[j]!==todayStatus){transitionIdx=j;break;}}
+      var transitionText=transitionIdx===-1
+        ?"Stays \""+STATUS_LABEL[todayStatus]+"\" for the entire next year from this constraint alone."
+        :"Currently \""+STATUS_LABEL[todayStatus]+"\". Status flips to \""+STATUS_LABEL[statuses[transitionIdx]]+"\" around "+new Date(day0.getTime()+transitionIdx*86400000).toISOString().slice(0,10)+" (day "+transitionIdx+").";
+
+      html+='<div class="xray-card">'+
+        '<h3>'+escapeHtml(t.name)+' <span class="hint" style="display:inline;">'+raToSex(t.ra)+'  '+decToSex(t.dec)+'</span></h3>'+
+        '<div class="yearbar">'+bar+'</div>'+
+        '<div class="monthlabels">'+monthLabels(day0)+'</div>'+
+        '<div class="ob-legend">'+
+          '<span><span class="ob-dot" style="background:'+STATUS_COLOR.ok+'"></span>observable ('+counts.ok+' d)</span>'+
+          (mission==="chandra"?'<span><span class="ob-dot" style="background:'+STATUS_COLOR.preferred+'"></span>preferred pitch ('+counts.preferred+' d)</span>':'')+
+          '<span><span class="ob-dot" style="background:'+STATUS_COLOR.blocked+'"></span>blocked'+((mission==="swift"||mission==="nustar")?", Sun or Moon":", Sun")+' ('+counts.blocked+' d)</span>'+
+        '</div>'+
+        '<p class="hint" style="margin-top:10px;">'+transitionText+'</p>'+
+      '</div>';
+    });
+    container.innerHTML=html;
+  }
+
+  document.getElementById("x-run").addEventListener("click",function(){
+    renderXrayResults(parseTargetLines(document.getElementById("x-input").value),xMissionSel.value);
+  });
+
+  /* ================================================================ */
+  /* CONVERTERS                                                          */
+  /* ================================================================ */
+  function recalcC1(){
+    var ra=parseFloat(document.getElementById("c1-ra").value),dec=parseFloat(document.getElementById("c1-dec").value);
+    document.getElementById("c1-out").textContent=(!isNaN(ra)&&!isNaN(dec))?raToSex(ra)+"   "+decToSex(dec):"–";
+  }
+  ["c1-ra","c1-dec"].forEach(function(id){document.getElementById(id).addEventListener("input",recalcC1);});
+
+  function recalcC2(){
+    var raTok=document.getElementById("c2-ra").value,decTok=document.getElementById("c2-dec").value;
+    var out=document.getElementById("c2-out");
+    if(!raTok.trim()||!decTok.trim()){out.textContent="–";return;}
+    var ra=parseRAToken(raTok),dec=parseDecToken(decTok);
+    out.textContent=(!isNaN(ra)&&!isNaN(dec))?ra.toFixed(6)+"°   "+dec.toFixed(6)+"°":"could not parse";
+  }
+  ["c2-ra","c2-dec"].forEach(function(id){document.getElementById(id).addEventListener("input",recalcC2);});
+
+  function recalcC3(){
+    var dateVal=document.getElementById("c3-date").value,timeVal=document.getElementById("c3-time").value;
+    var out=document.getElementById("c3-out");
+    if(!dateVal||!timeVal){out.textContent="–";return;}
+    var t=timeVal.length===5?timeVal+":00":timeVal;
+    var dt=new Date(dateVal+"T"+t+"Z");
+    if(isNaN(dt.getTime())){out.textContent="invalid date/time";return;}
+    var site=SITES[c3Site.value];
+    out.textContent="GMST "+fmtHMS(gmstHours(dt))+"   LST ("+site.label+") "+fmtHMS(lstHours(dt,site.lon));
+  }
+  ["c3-date","c3-time","c3-site"].forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener("input",recalcC3); el.addEventListener("change",recalcC3);
+  });
+  document.getElementById("c3-now").addEventListener("click",function(){
+    var now=new Date();
+    document.getElementById("c3-date").value=now.toISOString().slice(0,10);
+    document.getElementById("c3-time").value=now.toISOString().slice(11,19);
+    recalcC3();
+  });
+
+  document.getElementById("c4-todate").addEventListener("click",function(){
+    var dateVal=document.getElementById("c4-date").value;
+    var out=document.getElementById("c4-out");
+    if(!dateVal){out.textContent="enter a date";return;}
+    var t=(document.getElementById("c4-time").value||"00:00:00"); if(t.length===5)t+=":00";
+    var dt=new Date(dateVal+"T"+t+"Z");
+    if(isNaN(dt.getTime())){out.textContent="invalid date/time";return;}
+    var jd=julianDate(dt);
+    out.textContent="JD "+jd.toFixed(6)+"   MJD "+(jd-2400000.5).toFixed(6);
+  });
+  document.getElementById("c4-tojd").addEventListener("click",function(){
+    var mjd=parseFloat(document.getElementById("c4-mjd").value);
+    var out=document.getElementById("c4-out2");
+    if(isNaN(mjd)){out.textContent="enter an MJD value";return;}
+    out.textContent=new Date((mjd+2400000.5-2440587.5)*86400000).toISOString().replace("T"," ").replace("Z"," UTC");
+  });
+
+  /* ================================================================ */
+  /* SN NAME LOOKUP (lazy-loads catalog on first field focus)           */
+  /* ================================================================ */
+  var snCatalog=null,snCatalogLoading=false,snCatalogCbs=[];
+
+  function loadSNCatalog(cb){
+    if(snCatalog){cb(snCatalog);return;}
+    snCatalogCbs.push(cb);
+    if(snCatalogLoading)return;
+    snCatalogLoading=true;
+    fetch("supernovae_database/supernovae.json")
+      .then(function(r){return r.json();})
+      .then(function(data){
+        snCatalog=data; snCatalogLoading=false;
+        snCatalogCbs.forEach(function(fn){fn(snCatalog);}); snCatalogCbs=[];
+      })
+      .catch(function(err){
+        snCatalogLoading=false; snCatalogCbs=[];
+        console.error("SN catalog load error:",err);
+      });
+  }
+
+  function setupSNSearch(inputId,dropdownId,textareaId,loadingId){
+    var input=document.getElementById(inputId);
+    var dropdown=document.getElementById(dropdownId);
+    var textarea=document.getElementById(textareaId);
+    var loadEl=loadingId?document.getElementById(loadingId):null;
+    if(!input||!dropdown||!textarea)return;
+
+    input.addEventListener("focus",function(){
+      if(!snCatalog&&!snCatalogLoading){
+        if(loadEl)loadEl.style.display="";
+        loadSNCatalog(function(){if(loadEl)loadEl.style.display="none";});
+      }
+    },{once:true});
+
+    input.addEventListener("input",function(){
+      var q=input.value.trim().toLowerCase();
+      if(q.length<2){dropdown.style.display="none";return;}
+      if(!snCatalog){
+        dropdown.innerHTML='<div class="sn-ac-loading">Loading catalog...</div>';
+        dropdown.style.display="";
+        loadSNCatalog(function(){if(input.value.trim().toLowerCase()===q)doSearch(q);});
+        return;
+      }
+      doSearch(q);
+    });
+
+    function doSearch(q){
+      var matches=[];
+      for(var i=0;i<snCatalog.length&&matches.length<20;i++){
+        var sn=snCatalog[i];
+        if(sn.name&&sn.name.toLowerCase().includes(q)&&sn.ra!=null&&sn.dec!=null)matches.push(sn);
+      }
+      if(matches.length===0){
+        dropdown.innerHTML='<div class="sn-ac-empty">No matches found.</div>';
+        dropdown.style.display=""; return;
+      }
+      dropdown.innerHTML=matches.map(function(sn){
+        var ra=raToSex(sn.ra),dec=decToSex(sn.dec);
+        var typeStr=sn.type?sn.type.replace(/^SN\s+/i,""):"";
+        return'<div class="sn-ac-item" tabindex="0"'+
+          ' data-name="'+escapeHtml(sn.name)+'"'+
+          ' data-ra="'+escapeHtml(ra)+'"'+
+          ' data-dec="'+escapeHtml(dec)+'">'+
+          '<span class="sn-ac-name">'+escapeHtml(sn.name)+'</span>'+
+          '<span class="sn-ac-meta">'+(typeStr?escapeHtml(typeStr)+"&ensp;":"")+ra+"&ensp;"+dec+'</span>'+
+          '</div>';
+      }).join("");
+      dropdown.style.display="";
+
+      dropdown.querySelectorAll(".sn-ac-item[data-name]").forEach(function(item){
+        item.addEventListener("click",function(){appendTarget(item);});
+        item.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();appendTarget(item);}});
+      });
+    }
+
+    function appendTarget(item){
+      var line=item.dataset.name+"  "+item.dataset.ra+"  "+item.dataset.dec;
+      var cur=textarea.value.trim();
+      textarea.value=cur?cur+"\n"+line:line;
+      input.value=""; dropdown.style.display="none"; textarea.focus();
+    }
+
+    document.addEventListener("click",function(e){
+      if(!input.contains(e.target)&&!dropdown.contains(e.target))dropdown.style.display="none";
+    });
+  }
+
+  setupSNSearch("r-sn-input","r-sn-dropdown","r-input","r-sn-loading");
+  setupSNSearch("x-sn-input","x-sn-dropdown","x-input","x-sn-loading");
+
+  /* ---------------------------------------------------------------- */
+  /* init                                                                */
+  /* ---------------------------------------------------------------- */
+  loadDeadlines(); renderDeadlines();
+
+  })();
+  </script>
+  <script data-goatcounter="https://stargazer137.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
