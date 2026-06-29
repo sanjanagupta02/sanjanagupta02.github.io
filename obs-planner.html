@@ -1375,7 +1375,8 @@
     }
 
     function appendTarget(item){
-      var line=item.dataset.name+"  "+item.dataset.ra+"  "+item.dataset.dec;
+      var safeName=item.dataset.name.replace(/\s+/g,"");
+      var line=safeName+"  "+item.dataset.ra+"  "+item.dataset.dec;
       var cur=textarea.value.trim();
       textarea.value=cur?cur+"\n"+line:line;
       input.value=""; dropdown.style.display="none"; textarea.focus();
