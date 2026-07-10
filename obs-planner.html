@@ -573,6 +573,33 @@
           </div>
         </div>
 
+        <h2 class="ob-section-title">Cosmology</h2>
+        <div class="twocol">
+          <div class="ob-card">
+            <h3>Redshift &rarr; luminosity distance</h3>
+            <div class="ob-row">
+              <div class="ob-field"><label>Redshift z</label><input id="cz-z" type="number" step="any" min="0" placeholder="0.1"></div>
+            </div>
+            <button class="ob-btn small secondary" id="cz-run" style="margin-top:10px;">Compute</button>
+            <p class="ob-mono" id="cz-out" style="margin-top:14px;font-size:.88rem;color:var(--color-accent);line-height:2;">–</p>
+          </div>
+          <div class="ob-card">
+            <h3>Luminosity distance &rarr; redshift</h3>
+            <div class="ob-row">
+              <div class="ob-field" style="flex:2"><label>D<sub>L</sub></label><input id="cz-dl" type="number" step="any" min="0" placeholder="500"></div>
+              <div class="ob-field"><label>Unit</label>
+                <select id="cz-unit">
+                  <option value="mpc">Mpc</option>
+                  <option value="gly">Gly</option>
+                  <option value="m">m</option>
+                </select>
+              </div>
+            </div>
+            <button class="ob-btn small secondary" id="cz-dl-run" style="margin-top:10px;">Compute</button>
+            <p class="ob-mono" id="cz-dl-out" style="margin-top:14px;font-size:.88rem;color:var(--color-accent);line-height:2;">–</p>
+          </div>
+        </div>
+
         <h2 class="ob-section-title">Time</h2>
         <div class="twocol">
           <div class="ob-card">
@@ -1090,6 +1117,42 @@
     return svg;
   }
 
+  function solarRadioThresholds(bandKey){
+    if(bandKey==="P") return {danger:30,caution:50};
+    if(bandKey==="L") return {danger:20,caution:35};
+    return {danger:15,caution:30};
+  }
+
+  function buildRadioSolarBar(t,bandKey){
+    var th=solarRadioThresholds(bandKey);
+    var day0=new Date(); day0.setHours(12,0,0,0);
+    var statuses=[];
+    for(var i=0;i<365;i++){
+      var d=new Date(day0.getTime()+i*86400000);
+      var sun=sunRADec(d);
+      var sep=angularSepDeg(sun.ra,sun.dec,t.ra,t.dec);
+      statuses.push(sep<th.danger?"sun-danger":sep<th.caution?"sun-caution":"sun-safe");
+    }
+    var counts={"sun-safe":0,"sun-caution":0,"sun-danger":0};
+    statuses.forEach(function(s){counts[s]++;});
+    var cmap={"sun-safe":PLOT_GOOD,"sun-caution":PLOT_ACCENT,"sun-danger":PLOT_BAD};
+    var bar=statuses.map(function(s){return'<div style="background:'+cmap[s]+';"></div>';}).join("");
+    var note=bandKey==="P"?"P-band: &ge;50&deg; preferred, strict &lt;30&deg; exclusion.":
+             bandKey==="L"?"L-band: &ge;35&deg; preferred, avoid &lt;20&deg;.":
+             "S/C/X/Ku/K/Ka/Q: &ge;30&deg; preferred, avoid &lt;15&deg;. Lower bands need larger clearance.";
+    return '<div style="margin-top:var(--space-lg);">'+
+      '<div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--color-star);margin-bottom:4px;letter-spacing:0.05em;text-transform:uppercase;">Solar avoidance (year ahead)</div>'+
+      '<div class="yearbar">'+bar+'</div>'+
+      '<div class="monthlabels">'+monthLabels(day0)+'</div>'+
+      '<div class="ob-legend">'+
+        '<span><span class="ob-dot" style="background:'+PLOT_GOOD+'"></span>&gt;'+th.caution+'&deg; clear ('+counts["sun-safe"]+' d)</span>'+
+        '<span><span class="ob-dot" style="background:'+PLOT_ACCENT+'"></span>'+th.danger+'&ndash;'+th.caution+'&deg; caution ('+counts["sun-caution"]+' d)</span>'+
+        '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>&lt;'+th.danger+'&deg; avoid ('+counts["sun-danger"]+' d)</span>'+
+      '</div>'+
+      '<p class="hint" style="margin-top:6px;">'+note+'</p>'+
+    '</div>';
+  }
+
   function renderRadioResults(targets,site,configFloor,bandInfo){
     var container=document.getElementById("r-results");
     if(targets.length===0){container.innerHTML="";return;}
@@ -1144,6 +1207,7 @@
               '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>hard limit ('+site.hard+'&deg;)</span>'+
               (isVLA&&recFloor!==site.hard?'<span><span class="ob-dot" style="background:'+PLOT_ACCENT+'"></span>recommended floor ('+recFloor+'&deg;)</span>':'')+
             '</div>'+
+            buildRadioSolarBar(t,isVLA?bandInfo.key:null)+
           '</div>'+
         '</td></tr>'
       );
@@ -1389,6 +1453,69 @@
 
   setupSNSearch("r-sn-input","r-sn-dropdown","r-input","r-sn-loading");
   setupSNSearch("x-sn-input","x-sn-dropdown","x-input","x-sn-loading");
+
+  /* ---------------------------------------------------------------- */
+  /* cosmology converters                                               */
+  /* ---------------------------------------------------------------- */
+  var COSMO={H0:67.4,Om:0.315,Ol:0.685,c:299792.458};
+  var MPC_TO_LY=3.26156e6,MPC_TO_M=3.085677581e22;
+
+  function eOfZ(z){return Math.sqrt(COSMO.Om*Math.pow(1+z,3)+COSMO.Ol);}
+
+  function comovingMpc(z){
+    if(z<=0)return 0;
+    var n=1000,dz=z/n,sum=0;
+    for(var i=0;i<=n;i++){
+      var f=1/eOfZ(i*dz);
+      sum+=(i===0||i===n?1:i%2===0?2:4)*f;
+    }
+    return(COSMO.c/COSMO.H0)*(dz/3)*sum;
+  }
+
+  function lumDistMpc(z){return(1+z)*comovingMpc(z);}
+
+  function dlToMpc(val,unit){
+    if(unit==="mpc")return val;
+    if(unit==="gly")return val*1e9/MPC_TO_LY;
+    return val/MPC_TO_M;
+  }
+
+  function zFromLumDist(dL){
+    if(dL<=0)return 0;
+    var lo=0,hi=20,mid;
+    for(var i=0;i<60;i++){mid=(lo+hi)/2;if(lumDistMpc(mid)<dL)lo=mid;else hi=mid;if(hi-lo<1e-7)break;}
+    return(lo+hi)/2;
+  }
+
+  function fmtSci(x){return x.toExponential(4);}
+
+  document.getElementById("cz-run").addEventListener("click",function(){
+    var z=parseFloat(document.getElementById("cz-z").value);
+    var out=document.getElementById("cz-out");
+    if(isNaN(z)||z<0){out.innerHTML="Enter a valid redshift &ge; 0.";return;}
+    var dc=comovingMpc(z),dl=(1+z)*dc;
+    out.innerHTML=
+      'D<sub>L</sub> (luminosity)&nbsp;= <strong>'+dl.toFixed(2)+' Mpc</strong><br>'+
+      '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;= '+(dl*MPC_TO_LY/1e9).toFixed(4)+' Gly<br>'+
+      '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;= '+fmtSci(dl*MPC_TO_M)+' m<br>'+
+      'D<sub>C</sub> (comoving)&ensp;&ensp;&ensp;&ensp;= '+dc.toFixed(2)+' Mpc<br>'+
+      '<span style="color:var(--color-text-soft);font-size:0.76rem;">Planck 2018 &mdash; H<sub>0</sub>=67.4 km/s/Mpc, &Omega;<sub>m</sub>=0.315, &Omega;<sub>&Lambda;</sub>=0.685, flat</span>';
+  });
+
+  document.getElementById("cz-dl-run").addEventListener("click",function(){
+    var val=parseFloat(document.getElementById("cz-dl").value);
+    var unit=document.getElementById("cz-unit").value;
+    var out=document.getElementById("cz-dl-out");
+    if(isNaN(val)||val<=0){out.innerHTML="Enter a valid positive distance.";return;}
+    var dL_mpc=dlToMpc(val,unit);
+    var z=zFromLumDist(dL_mpc);
+    var dc=comovingMpc(z);
+    out.innerHTML=
+      'z = <strong>'+z.toFixed(6)+'</strong><br>'+
+      'D<sub>L</sub> (luminosity)&nbsp;= '+dL_mpc.toFixed(2)+' Mpc<br>'+
+      'D<sub>C</sub> (comoving)&ensp;&ensp;&ensp;&ensp;= '+dc.toFixed(2)+' Mpc<br>'+
+      '<span style="color:var(--color-text-soft);font-size:0.76rem;">Planck 2018 &mdash; H<sub>0</sub>=67.4 km/s/Mpc, &Omega;<sub>m</sub>=0.315, &Omega;<sub>&Lambda;</sub>=0.685, flat</span>';
+  });
 
   /* ---------------------------------------------------------------- */
   /* init                                                                */
