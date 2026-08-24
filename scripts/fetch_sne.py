@@ -41,31 +41,72 @@ UPDATABLE = ['ra', 'dec', 'type', 'discovery_date', 'redshift', 'reporting_group
 # ------------------------------------------------------------------ #
 TNS_ID   = os.environ.get("TNS_BOT_ID", "")
 TNS_NAME = os.environ.get("TNS_BOT_NAME", "")
+TNS_USER = os.environ.get("TNS_USERNAME", "")
+TNS_PASS = os.environ.get("TNS_PASSWORD", "")
 
 if not TNS_ID or not TNS_NAME:
     print("Error: TNS_BOT_ID and TNS_BOT_NAME environment variables must be set.")
     sys.exit(1)
 
-headers = {
-    "user-agent": f'tns_marker{{"tns_id":{TNS_ID},"type": "user", "name":"{TNS_NAME}"}}'
-}
+UA = f'tns_marker{{"tns_id":{TNS_ID},"type":"user","name":"{TNS_NAME}"}}'
 
 # ------------------------------------------------------------------ #
 # Download
 # ------------------------------------------------------------------ #
-url = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects.csv.zip"
-print("Downloading full TNS catalog (this may take a few minutes)...")
+LOCAL_ZIP = "supernovae_database/tns_public_objects.csv.zip"
+LOCAL_CSV = "supernovae_database/tns_public_objects.csv"
+BULK_URL  = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_objects.csv.zip"
+LOGIN_URL = "https://www.wis-tns.org/user/login"
 
-r = requests.get(url, headers=headers, timeout=300)
-if r.status_code != 200:
-    print(f"HTTP {r.status_code} -- response headers: {dict(r.headers)}")
-    print(f"Response body (first 500 chars): {r.text[:500]}")
-r.raise_for_status()
-print(f"Downloaded {len(r.content) / 1024:.0f} KB")
+def load_df_from_zip(src):
+    if isinstance(src, (str, bytes)):
+        cm = zipfile.ZipFile(src)
+    else:
+        cm = zipfile.ZipFile(src)
+    with cm as z:
+        with z.open(z.namelist()[0]) as f:
+            return pd.read_csv(f, skiprows=1, low_memory=False)
 
-with zipfile.ZipFile(io.BytesIO(r.content)) as z:
-    with z.open(z.namelist()[0]) as f:
-        df = pd.read_csv(f, skiprows=1, low_memory=False)
+def tns_login_session():
+    import re
+    session = requests.Session()
+    session.headers["user-agent"] = UA
+    r = session.get(LOGIN_URL, timeout=30)
+    data = {"form_id": "user_login_form", "op": "Log in",
+            "name": TNS_USER, "pass": TNS_PASS}
+    for field in ("form_build_id", "form_token"):
+        m = re.search(rf'name="{field}"\s+value="([^"]+)"', r.text)
+        if m:
+            data[field] = m.group(1)
+    r2 = session.post(LOGIN_URL, data=data, timeout=30, allow_redirects=True)
+    # Drupal stays on /user/login if login failed; any redirect away means success
+    if LOGIN_URL in r2.url and "logout" not in r2.text.lower():
+        print(f"Login response URL: {r2.url}")
+        print(f"Response snippet: {r2.text[200:600]}")
+        raise RuntimeError("TNS login failed -- check TNS_USERNAME and TNS_PASSWORD.")
+    print("Logged in to TNS.")
+    return session
+
+if os.path.exists(LOCAL_ZIP):
+    print(f"Using local zip: {LOCAL_ZIP}")
+    df = load_df_from_zip(LOCAL_ZIP)
+elif os.path.exists(LOCAL_CSV):
+    print(f"Using local CSV: {LOCAL_CSV}")
+    df = pd.read_csv(LOCAL_CSV, skiprows=1, low_memory=False)
+else:
+    print("Downloading full TNS catalog (this may take a few minutes)...")
+    session = requests.Session()
+    session.headers["user-agent"] = UA
+    r = session.get(BULK_URL, timeout=300)
+    if r.status_code == 403 and TNS_USER and TNS_PASS:
+        print("Direct download blocked -- trying authenticated session...")
+        session = tns_login_session()
+        r = session.get(BULK_URL, timeout=300)
+    if r.status_code != 200:
+        print(f"HTTP {r.status_code}. Set TNS_USERNAME and TNS_PASSWORD to enable login fallback.")
+        r.raise_for_status()
+    print(f"Downloaded {len(r.content) / 1024:.0f} KB")
+    df = load_df_from_zip(io.BytesIO(r.content))
 
 # ------------------------------------------------------------------ #
 # Parse and clean
