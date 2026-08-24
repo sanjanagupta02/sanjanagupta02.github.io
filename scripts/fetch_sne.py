@@ -47,7 +47,7 @@ if not TNS_ID or not TNS_NAME:
     sys.exit(1)
 
 headers = {
-    "user-agent": f'tns_marker{{"tns_id": {TNS_ID}, "type": "user", "name": "{TNS_NAME}"}}'
+    "user-agent": f'tns_marker{{"tns_id":{TNS_ID},"type": "user", "name":"{TNS_NAME}"}}'
 }
 
 # ------------------------------------------------------------------ #
@@ -57,6 +57,9 @@ url = "https://www.wis-tns.org/system/files/tns_public_objects/tns_public_object
 print("Downloading full TNS catalog (this may take a few minutes)...")
 
 r = requests.get(url, headers=headers, timeout=300)
+if r.status_code != 200:
+    print(f"HTTP {r.status_code} -- response headers: {dict(r.headers)}")
+    print(f"Response body (first 500 chars): {r.text[:500]}")
 r.raise_for_status()
 print(f"Downloaded {len(r.content) / 1024:.0f} KB")
 
