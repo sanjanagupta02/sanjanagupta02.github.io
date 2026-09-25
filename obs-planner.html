@@ -574,6 +574,16 @@
         </div>
 
         <h2 class="ob-section-title">Cosmology</h2>
+        <div class="ob-card" style="margin-bottom:var(--space-md);">
+          <div class="ob-field">
+            <label>Fill from SN catalog</label>
+            <div class="sn-ac-wrap">
+              <input type="text" id="cz-sn-input" placeholder="Type SN name to fill redshift..." autocomplete="off" spellcheck="false">
+              <div id="cz-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:6px;">Select a supernova to fill the redshift field below. You can also enter any value manually.</p>
+        </div>
         <div class="twocol">
           <div class="ob-card">
             <h3>Redshift &rarr; luminosity distance</h3>
@@ -1461,6 +1471,75 @@
 
   setupSNSearch("r-sn-input","r-sn-dropdown","r-input","r-sn-loading");
   setupSNSearch("x-sn-input","x-sn-dropdown","x-input","x-sn-loading");
+
+  /* SN lookup for cosmology converter -- fills redshift field         */
+  (function(){
+    var input=document.getElementById("cz-sn-input");
+    var dropdown=document.getElementById("cz-sn-dropdown");
+    var zInput=document.getElementById("cz-z");
+    var czOut=document.getElementById("cz-out");
+    if(!input||!dropdown||!zInput)return;
+
+    input.addEventListener("focus",function(){
+      if(!snCatalog&&!snCatalogLoading)loadSNCatalog(function(){});
+    },{once:true});
+
+    input.addEventListener("input",function(){
+      var q=input.value.trim().toLowerCase();
+      if(q.length<2){dropdown.style.display="none";return;}
+      if(!snCatalog){
+        dropdown.innerHTML='<div class="sn-ac-loading">Loading catalog...</div>';
+        dropdown.style.display="";
+        loadSNCatalog(function(){if(input.value.trim().toLowerCase()===q)doSearch(q);});
+        return;
+      }
+      doSearch(q);
+    });
+
+    function doSearch(q){
+      var matches=[];
+      for(var i=0;i<snCatalog.length&&matches.length<20;i++){
+        var sn=snCatalog[i];
+        if(sn.name&&sn.name.toLowerCase().includes(q))matches.push(sn);
+      }
+      if(matches.length===0){
+        dropdown.innerHTML='<div class="sn-ac-empty">No matches found.</div>';
+        dropdown.style.display=""; return;
+      }
+      dropdown.innerHTML=matches.map(function(sn){
+        var typeStr=sn.type?sn.type.replace(/^SN\s+/i,""):"";
+        var zStr=sn.redshift!=null?("z = "+parseFloat(sn.redshift).toFixed(4)):"no z in catalog";
+        return'<div class="sn-ac-item" tabindex="0"'+
+          ' data-name="'+escapeHtml(sn.name)+'"'+
+          ' data-z="'+(sn.redshift!=null?sn.redshift:"")+'">'+
+          '<span class="sn-ac-name">'+escapeHtml(sn.name)+'</span>'+
+          '<span class="sn-ac-meta">'+(typeStr?escapeHtml(typeStr)+"&ensp;":"")+escapeHtml(zStr)+'</span>'+
+          '</div>';
+      }).join("");
+      dropdown.style.display="";
+      dropdown.querySelectorAll(".sn-ac-item").forEach(function(item){
+        item.addEventListener("click",function(){pickSN(item);});
+        item.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pickSN(item);}});
+      });
+    }
+
+    function pickSN(item){
+      dropdown.style.display="none";
+      if(!item.dataset.z){
+        input.value=item.dataset.name;
+        czOut.innerHTML='<span style="color:var(--color-text-soft);">No redshift in catalog for '+escapeHtml(item.dataset.name)+'.</span>';
+        return;
+      }
+      var z=parseFloat(item.dataset.z);
+      zInput.value=z;
+      input.value=item.dataset.name;
+      document.getElementById("cz-run").click();
+    }
+
+    document.addEventListener("click",function(e){
+      if(!input.contains(e.target)&&!dropdown.contains(e.target))dropdown.style.display="none";
+    });
+  })();
 
   /* ---------------------------------------------------------------- */
   /* cosmology converters                                               */
