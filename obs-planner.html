@@ -553,6 +553,16 @@
 
       <!-- ================= CONVERT ================= -->
       <section class="ob-tab" id="tab-convert">
+        <div class="ob-card" style="margin-bottom:var(--space-md);">
+          <div class="ob-field">
+            <label>Fill from SN catalog</label>
+            <div class="sn-ac-wrap">
+              <input type="text" id="cz-sn-input" placeholder="Type SN name..." autocomplete="off" spellcheck="false">
+              <div id="cz-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:6px;">Fills coordinates and redshift for the converters below. You can also enter values manually.</p>
+        </div>
         <h2 class="ob-section-title">Coordinates</h2>
         <div class="twocol">
           <div class="ob-card">
@@ -574,16 +584,6 @@
         </div>
 
         <h2 class="ob-section-title">Cosmology</h2>
-        <div class="ob-card" style="margin-bottom:var(--space-md);">
-          <div class="ob-field">
-            <label>Fill from SN catalog</label>
-            <div class="sn-ac-wrap">
-              <input type="text" id="cz-sn-input" placeholder="Type SN name to fill redshift..." autocomplete="off" spellcheck="false">
-              <div id="cz-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
-            </div>
-          </div>
-          <p class="hint" style="margin-top:6px;">Select a supernova to fill the redshift field below. You can also enter any value manually.</p>
-        </div>
         <div class="twocol">
           <div class="ob-card">
             <h3>Redshift &rarr; luminosity distance</h3>
@@ -1472,13 +1472,11 @@
   setupSNSearch("r-sn-input","r-sn-dropdown","r-input","r-sn-loading");
   setupSNSearch("x-sn-input","x-sn-dropdown","x-input","x-sn-loading");
 
-  /* SN lookup for cosmology converter -- fills redshift field         */
+  /* SN lookup for converters -- fills coords and redshift             */
   (function(){
     var input=document.getElementById("cz-sn-input");
     var dropdown=document.getElementById("cz-sn-dropdown");
-    var zInput=document.getElementById("cz-z");
-    var czOut=document.getElementById("cz-out");
-    if(!input||!dropdown||!zInput)return;
+    if(!input||!dropdown)return;
 
     input.addEventListener("focus",function(){
       if(!snCatalog&&!snCatalogLoading)loadSNCatalog(function(){});
@@ -1508,12 +1506,15 @@
       }
       dropdown.innerHTML=matches.map(function(sn){
         var typeStr=sn.type?sn.type.replace(/^SN\s+/i,""):"";
-        var zStr=sn.redshift!=null?("z = "+parseFloat(sn.redshift).toFixed(4)):"no z in catalog";
+        var zStr=sn.redshift!=null?("z="+parseFloat(sn.redshift).toFixed(4)):"no z";
+        var raStr=sn.ra!=null?raToSex(sn.ra):"";
         return'<div class="sn-ac-item" tabindex="0"'+
           ' data-name="'+escapeHtml(sn.name)+'"'+
+          ' data-ra="'+(sn.ra!=null?sn.ra:"")+'"'+
+          ' data-dec="'+(sn.dec!=null?sn.dec:"")+'"'+
           ' data-z="'+(sn.redshift!=null?sn.redshift:"")+'">'+
           '<span class="sn-ac-name">'+escapeHtml(sn.name)+'</span>'+
-          '<span class="sn-ac-meta">'+(typeStr?escapeHtml(typeStr)+"&ensp;":"")+escapeHtml(zStr)+'</span>'+
+          '<span class="sn-ac-meta">'+(typeStr?escapeHtml(typeStr)+"&ensp;":"")+escapeHtml(zStr)+(raStr?"&ensp;"+escapeHtml(raStr):"")+'</span>'+
           '</div>';
       }).join("");
       dropdown.style.display="";
@@ -1525,15 +1526,25 @@
 
     function pickSN(item){
       dropdown.style.display="none";
-      if(!item.dataset.z){
-        input.value=item.dataset.name;
-        czOut.innerHTML='<span style="color:var(--color-text-soft);">No redshift in catalog for '+escapeHtml(item.dataset.name)+'.</span>';
-        return;
-      }
-      var z=parseFloat(item.dataset.z);
-      zInput.value=z;
       input.value=item.dataset.name;
-      document.getElementById("cz-run").click();
+
+      /* fill coordinates */
+      if(item.dataset.ra!==""){
+        var ra=parseFloat(item.dataset.ra),dec=parseFloat(item.dataset.dec);
+        var c1ra=document.getElementById("c1-ra"),c1dec=document.getElementById("c1-dec");
+        c1ra.value=ra; c1dec.value=dec;
+        c1ra.dispatchEvent(new Event("input"));
+      }
+
+      /* fill redshift */
+      var czOut=document.getElementById("cz-out");
+      if(item.dataset.z!==""){
+        var zInput=document.getElementById("cz-z");
+        zInput.value=parseFloat(item.dataset.z);
+        document.getElementById("cz-run").click();
+      } else if(czOut){
+        czOut.innerHTML='<span style="color:var(--color-text-soft);">No redshift in catalog for '+escapeHtml(item.dataset.name)+'.</span>';
+      }
     }
 
     document.addEventListener("click",function(e){
