@@ -716,10 +716,10 @@
   var CLARKE_BELT_BANDS={S:1,C:1,Ku:1,K:1,Ka:1};
 
   var XRAY_MISSIONS={
-    chandra:{label:"Chandra",      note:"Hard Sun-avoidance limit only (cannot be overridden). Pitch angles outside roughly 65-135 degrees may need segmented observations for thermal reasons; no part of the sky is ever unobservable for more than about 3 months. Moon avoidance is not separately modeled here."},
+    chandra:{label:"Chandra",      note:"Hard limits: pitch &lt; 46.2&deg; (Sun) and pitch &gt; 170&deg; (anti-Sun / propellant freeze) &mdash; cannot be overridden. Constrained zones: 65&ndash;135&deg; (EPHIN thermal; long obs segmented) and 152&ndash;170&deg; (propellant cooling; short obs only). Unrestricted: 46.2&ndash;65&deg; and 135&ndash;152&deg;. Moon avoidance &gt; 6&deg; from Moon limb (waivable). No part of the sky is inaccessible for more than ~3 months."},
     swift:  {label:"Swift (Neil Gehrels)", note:"Both the Sun (>46 deg) and Moon (>23 deg) avoidance cones are modeled here. Also keeps more than ~28 degrees from the Earth limb (not modeled), and targets within ~6 degrees of the orbital pole can have long unobservable stretches."},
     nustar: {label:"NuSTAR",       note:"Both the Sun (>39 deg) and Moon (>14 deg) avoidance cones are modeled here. NuSTAR can point closer to the Sun than this in special circumstances, at the cost of pointing accuracy."},
-    xmm:    {label:"XMM-Newton",   note:"Solar-panel power requires the Sun-target angle to stay within a narrow band (not a simple avoidance cone); most targets are only visible for a couple of months per year. Moon avoidance is not separately modeled here."}
+    xmm:    {label:"XMM-Newton",   note:"Solar-panel design constrains Sun-target angle to 70&ndash;110&deg; at all times &mdash; most targets visible only ~2 months per year. Moon avoidance &gt;22&deg; (center, standard season; increases to 35&deg; during eclipse seasons &mdash; not separately modeled here)."}
   };
 
   /* ---------------------------------------------------------------- */
@@ -1255,13 +1255,26 @@
   xMissionSel.addEventListener("change",updateXrayNote); updateXrayNote();
 
   function statusForMission(mission,sunSep,moonSep){
-    if(mission==="chandra"){if(sunSep<=46.2)return"sun-blocked"; if(sunSep>=65&&sunSep<=135)return"preferred"; return"ok";}
+    if(mission==="chandra"){
+      if(sunSep<=46.2||sunSep>=170)return"sun-blocked";   // hard forbidden: Sun + anti-Sun
+      if(moonSep<=6)return"moon-blocked";                   // 6 deg from Moon limb
+      if((sunSep>46.2&&sunSep<65)||(sunSep>135&&sunSep<152))return"preferred"; // unrestricted pitch
+      return"ok";  // constrained: 65-135 (EPHIN) or 152-170 (propellant)
+    }
     if(mission==="swift"){if(sunSep<=46)return"sun-blocked"; if(moonSep<=23)return"moon-blocked"; return"ok";}
     if(mission==="nustar"){if(sunSep<=39)return"sun-blocked"; if(moonSep<=14)return"moon-blocked"; return"ok";}
-    if(mission==="xmm"){return(sunSep>=70&&sunSep<=110)?"ok":"sun-blocked";}
+    if(mission==="xmm"){if(sunSep<70||sunSep>110)return"sun-blocked"; if(moonSep<=22)return"moon-blocked"; return"ok";}
     return"ok";
   }
   var STATUS_LABEL={"sun-blocked":"blocked (Sun)","moon-blocked":"blocked (Moon)",ok:"observable",preferred:"observable (preferred pitch)"};
+  function statusLabel(status,mission){
+    if(mission==="chandra"){
+      if(status==="sun-blocked")return"blocked (Sun or anti-Sun)";
+      if(status==="ok")return"constrained pitch (EPHIN / propellant)";
+      if(status==="preferred")return"unrestricted pitch";
+    }
+    return STATUS_LABEL[status]||status;
+  }
   function statusColor(status,mission){
     if(status==="sun-blocked")return PLOT_BAD;
     if(status==="moon-blocked")return PLOT_MOON;
@@ -1300,18 +1313,22 @@
       var transitionIdx=-1;
       for(var j=1;j<statuses.length;j++){if(statuses[j]!==todayStatus){transitionIdx=j;break;}}
       var transitionText=transitionIdx===-1
-        ?"Stays \""+STATUS_LABEL[todayStatus]+"\" for the entire next year from this constraint alone."
-        :"Currently \""+STATUS_LABEL[todayStatus]+"\". Status flips to \""+STATUS_LABEL[statuses[transitionIdx]]+"\" around "+new Date(day0.getTime()+transitionIdx*86400000).toISOString().slice(0,10)+" (day "+transitionIdx+").";
+        ?"Stays \""+statusLabel(todayStatus,mission)+"\" for the entire next year from this constraint alone."
+        :"Currently \""+statusLabel(todayStatus,mission)+"\". Status flips to \""+statusLabel(statuses[transitionIdx],mission)+"\" around "+new Date(day0.getTime()+transitionIdx*86400000).toISOString().slice(0,10)+" (day "+transitionIdx+").";
 
       html+='<div class="xray-card">'+
         '<h3>'+escapeHtml(t.name)+' <span class="hint" style="display:inline;">'+raToSex(t.ra)+'  '+decToSex(t.dec)+'</span></h3>'+
         '<div class="yearbar">'+bar+'</div>'+
         '<div class="monthlabels">'+monthLabels(day0)+'</div>'+
         '<div class="ob-legend">'+
-          '<span><span class="ob-dot" style="background:'+statusColor("ok",mission)+'"></span>observable ('+counts.ok+' d)</span>'+
-          (mission==="chandra"?'<span><span class="ob-dot" style="background:'+statusColor("preferred",mission)+'"></span>preferred pitch ('+counts.preferred+' d)</span>':'')+
-          '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>blocked, Sun ('+(counts["sun-blocked"]||0)+' d)</span>'+
-          ((mission==="swift"||mission==="nustar")?'<span><span class="ob-dot" style="background:'+PLOT_MOON+'"></span>blocked, Moon ('+(counts["moon-blocked"]||0)+' d)</span>':'')+
+          (mission==="chandra"?
+            '<span><span class="ob-dot" style="background:'+PLOT_GOOD+'"></span>unrestricted pitch ('+counts.preferred+' d)</span>'+
+            '<span><span class="ob-dot" style="background:'+PLOT_BLUE+'"></span>constrained pitch ('+counts.ok+' d)</span>'
+          :
+            '<span><span class="ob-dot" style="background:'+statusColor("ok",mission)+'"></span>observable ('+counts.ok+' d)</span>'
+          )+
+          '<span><span class="ob-dot" style="background:'+PLOT_BAD+'"></span>'+(mission==="chandra"?"blocked, Sun/anti-Sun":"blocked, Sun")+' ('+(counts["sun-blocked"]||0)+' d)</span>'+
+          ((mission==="swift"||mission==="nustar"||mission==="chandra"||mission==="xmm")?'<span><span class="ob-dot" style="background:'+PLOT_MOON+'"></span>blocked, Moon ('+(counts["moon-blocked"]||0)+' d)</span>':'')+
         '</div>'+
         '<p class="hint" style="margin-top:10px;">'+transitionText+'</p>'+
       '</div>';
