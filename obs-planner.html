@@ -610,6 +610,36 @@
           </div>
         </div>
 
+        <h2 class="ob-section-title">Flux &rarr; Luminosity</h2>
+        <div class="ob-card">
+          <h3>Spectral flux density &rarr; spectral luminosity</h3>
+          <div class="ob-field">
+            <label>Fill distance from SN catalog</label>
+            <div class="sn-ac-wrap">
+              <input type="text" id="fl-sn-input" placeholder="Type SN name..." autocomplete="off" spellcheck="false">
+              <div id="fl-sn-dropdown" class="sn-ac-dropdown" style="display:none;"></div>
+            </div>
+            <p class="hint" style="margin-top:4px;">Looks up the SN redshift and computes D<sub>L</sub> from Planck 2018 cosmology.</p>
+          </div>
+          <div class="ob-row" style="margin-top:var(--space-sm);">
+            <div class="ob-field" style="flex:2"><label>Flux density S<sub>&nu;</sub></label><input id="fl-flux" type="number" step="any" min="0" placeholder="1.0"></div>
+            <div class="ob-field"><label>Unit</label>
+              <select id="fl-unit">
+                <option value="jy">Jy</option>
+                <option value="mjy">mJy</option>
+                <option value="ujy">&micro;Jy</option>
+              </select>
+            </div>
+          </div>
+          <div class="ob-row">
+            <div class="ob-field" style="flex:2"><label>Luminosity distance D<sub>L</sub> (Mpc)</label><input id="fl-dist" type="number" step="any" min="0" placeholder="100"></div>
+            <div class="ob-field"><label>Frequency (GHz) <span style="color:var(--color-text-soft);font-weight:400;font-size:0.82em;">optional</span></label><input id="fl-freq" type="number" step="any" min="0" placeholder="e.g. 8.5"></div>
+          </div>
+          <button class="ob-btn small secondary" id="fl-run" style="margin-top:10px;">Compute</button>
+          <p class="ob-mono" id="fl-out" style="margin-top:14px;font-size:.88rem;color:var(--color-accent);line-height:2.2;">–</p>
+          <p class="hint" style="margin-top:6px;">Formula: L<sub>&nu;</sub> = 4&pi; D<sub>L</sub><sup>2</sup> S<sub>&nu;</sub>. No K-correction applied (accurate for z &laquo; 1). To get total luminosity in erg/s, multiply L<sub>&nu;</sub> by your observed bandwidth &Delta;&nu; in Hz.</p>
+        </div>
+
         <h2 class="ob-section-title">Time</h2>
         <div class="twocol">
           <div class="ob-card">
@@ -1630,6 +1660,115 @@
       'D<sub>L</sub> (luminosity)&nbsp;= '+dL_mpc.toFixed(2)+' Mpc<br>'+
       'D<sub>C</sub> (comoving)&ensp;&ensp;&ensp;&ensp;= '+dc.toFixed(2)+' Mpc<br>'+
       '<span style="color:var(--color-text-soft);font-size:0.76rem;">Planck 2018 &mdash; H<sub>0</sub>=67.4 km/s/Mpc, &Omega;<sub>m</sub>=0.315, &Omega;<sub>&Lambda;</sub>=0.685, flat</span>';
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* flux → luminosity converter                                        */
+  /* ---------------------------------------------------------------- */
+  var JY_TO_CGS = 1e-23;          // erg/s/cm²/Hz per Jy
+  var MPC_TO_CM = 3.085677581e24; // cm per Mpc
+
+  /* SN lookup for flux→lum card -- fills D_L from redshift */
+  (function(){
+    var input    = document.getElementById("fl-sn-input");
+    var dropdown = document.getElementById("fl-sn-dropdown");
+    var distEl   = document.getElementById("fl-dist");
+    var outEl    = document.getElementById("fl-out");
+    if(!input||!dropdown||!distEl)return;
+
+    input.addEventListener("focus",function(){
+      if(!snCatalog&&!snCatalogLoading)loadSNCatalog(function(){});
+    },{once:true});
+
+    input.addEventListener("input",function(){
+      var q=input.value.trim().toLowerCase();
+      if(q.length<2){dropdown.style.display="none";return;}
+      if(!snCatalog){
+        dropdown.innerHTML='<div class="sn-ac-loading">Loading catalog...</div>';
+        dropdown.style.display="";
+        loadSNCatalog(function(){if(input.value.trim().toLowerCase()===q)doSearch(q);});
+        return;
+      }
+      doSearch(q);
+    });
+
+    function doSearch(q){
+      var matches=[];
+      for(var i=0;i<snCatalog.length&&matches.length<20;i++){
+        var sn=snCatalog[i];
+        if(sn.name&&sn.name.toLowerCase().includes(q))matches.push(sn);
+      }
+      if(matches.length===0){dropdown.innerHTML='<div class="sn-ac-empty">No matches found.</div>';dropdown.style.display="";return;}
+      dropdown.innerHTML=matches.map(function(sn){
+        var typeStr=sn.type?sn.type.replace(/^SN\s+/i,""):"";
+        var zStr=sn.redshift!=null?("z="+parseFloat(sn.redshift).toFixed(4)):"no z";
+        return'<div class="sn-ac-item" tabindex="0"'+
+          ' data-name="'+escapeHtml(sn.name)+'"'+
+          ' data-z="'+(sn.redshift!=null?sn.redshift:"")+'">'+
+          '<span class="sn-ac-name">'+escapeHtml(sn.name)+'</span>'+
+          '<span class="sn-ac-meta">'+(typeStr?escapeHtml(typeStr)+"&ensp;":"")+escapeHtml(zStr)+'</span>'+
+          '</div>';
+      }).join("");
+      dropdown.style.display="";
+      dropdown.querySelectorAll(".sn-ac-item").forEach(function(item){
+        item.addEventListener("click",function(){pickSN(item);});
+        item.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pickSN(item);}});
+      });
+    }
+
+    function pickSN(item){
+      dropdown.style.display="none";
+      input.value=item.dataset.name;
+      if(!item.dataset.z){
+        if(outEl)outEl.innerHTML='<span style="color:var(--color-text-soft);">No redshift in catalog for '+escapeHtml(item.dataset.name)+'. Enter Dₗ manually.</span>';
+        return;
+      }
+      var z=parseFloat(item.dataset.z);
+      var dL=lumDistMpc(z);
+      distEl.value=dL.toFixed(3);
+    }
+
+    document.addEventListener("click",function(e){
+      if(!input.contains(e.target)&&!dropdown.contains(e.target))dropdown.style.display="none";
+    });
+  })();
+
+  document.getElementById("fl-run").addEventListener("click",function(){
+    var out=document.getElementById("fl-out");
+    var S_raw=parseFloat(document.getElementById("fl-flux").value);
+    var unit=document.getElementById("fl-unit").value;
+    var D_Mpc=parseFloat(document.getElementById("fl-dist").value);
+    if(isNaN(S_raw)||S_raw<0){out.innerHTML="Enter a valid flux density &ge; 0.";return;}
+    if(isNaN(D_Mpc)||D_Mpc<=0){out.innerHTML="Enter a valid luminosity distance > 0 Mpc.";return;}
+
+    /* convert flux to Jy */
+    var S_jy = unit==="mjy"?S_raw*1e-3 : unit==="ujy"?S_raw*1e-6 : S_raw;
+
+    /* L_nu = 4pi D_L^2 S_nu  (erg/s/Hz) */
+    var D_cm  = D_Mpc * MPC_TO_CM;
+    var S_cgs = S_jy * JY_TO_CGS;
+    var Lnu   = 4 * Math.PI * D_cm * D_cm * S_cgs;
+
+    /* also in W/Hz: 1 erg/s/Hz = 1e-7 W/Hz */
+    var Lnu_W = Lnu * 1e-7;
+
+    /* optional nuLnu: nu [Hz] * L_nu [erg/s/Hz] = nuLnu [erg/s] */
+    var freq_ghz = parseFloat(document.getElementById("fl-freq").value);
+    var nuLnu_line = "";
+    if(!isNaN(freq_ghz) && freq_ghz > 0){
+      var nu_hz  = freq_ghz * 1e9;
+      var nuLnu  = nu_hz * Lnu;
+      nuLnu_line = '&nu;L<sub>&nu;</sub> = <strong>'+nuLnu.toExponential(4)+' erg s<sup>&minus;1</sup></strong> (at '+freq_ghz+' GHz)<br>';
+    }
+
+    out.innerHTML=
+      'L<sub>&nu;</sub> = <strong>'+Lnu.toExponential(4)+' erg s<sup>&minus;1</sup> Hz<sup>&minus;1</sup></strong><br>'+
+      '&emsp;&emsp;&emsp; = '+Lnu_W.toExponential(4)+' W Hz<sup>&minus;1</sup><br>'+
+      nuLnu_line+
+      '<span style="color:var(--color-text-soft);font-size:0.76rem;">'+
+        'S<sub>&nu;</sub> = '+S_jy.toExponential(4)+' Jy &nbsp;&middot;&nbsp; D<sub>L</sub> = '+D_Mpc.toFixed(2)+' Mpc'+
+        ' &nbsp;&middot;&nbsp; 4&pi;D<sub>L</sub><sup>2</sup>S<sub>&nu;</sub>, no K-correction'+
+      '</span>';
   });
 
   /* ---------------------------------------------------------------- */
